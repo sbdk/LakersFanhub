@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="newsTableViewCell" rowHeight="80" id="c7U-Fn-Nhq" customClass="newsTableViewCell" customModule="Lakers_Fanhub" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="newsTableViewCell" rowHeight="80" id="c7U-Fn-Nhq" customClass="NewsTableViewCell" customModule="Lakers_Fanhub" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="92" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="c7U-Fn-Nhq" id="nbU-mJ-ss7">
@@ -129,6 +129,25 @@
             </objects>
             <point key="canvasLocation" x="1394" y="201"/>
         </scene>
+        <!--News Detail View Controller-->
+        <scene sceneID="SQs-nl-DLx">
+            <objects>
+                <viewController storyboardIdentifier="NewsDetailViewController" id="5R9-FO-rcx" customClass="NewsDetailViewController" customModule="Lakers_Fanhub" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="uAP-yG-w7Y"/>
+                        <viewControllerLayoutGuide type="bottom" id="7XX-xI-pc0"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="31S-mS-H3J">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FIK-C9-m49" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1844.5" y="200.5"/>
+        </scene>
         <!--View Controller-->
         <scene sceneID="jMA-Z3-tNj">
             <objects>
@@ -138,15 +157,16 @@
                         <viewControllerLayoutGuide type="bottom" id="ggL-wA-g4B"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="wUa-7W-b2e">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="s6p-VU-xrC"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZST-hV-oW9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1388" y="861"/>
+            <point key="canvasLocation" x="1393.5" y="920.5"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="IP5-wU-TE1">
