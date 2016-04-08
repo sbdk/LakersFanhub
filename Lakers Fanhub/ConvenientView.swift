@@ -25,7 +25,27 @@ class ConvenientView: NSObject {
         hostView.presentViewController(controller, animated: true, completion: nil)
     }
     
+    let newsTitleTextAttributes = [
+        NSStrokeColorAttributeName : UIColor(red: 92/255.0, green: 92/255.0, blue: 92/255.0, alpha: 1.0),
+        NSForegroundColorAttributeName: UIColor.whiteColor(),
+        NSFontAttributeName :UIFont(name: "Courier", size: 16)!,
+        NSStrokeWidthAttributeName : 0
+    ]
     
+    let newsSubTitleTextAttributes = [
+        NSStrokeColorAttributeName : UIColor.blackColor(),
+        NSForegroundColorAttributeName: UIColor.whiteColor(),
+        NSFontAttributeName :UIFont(name: "Avenir-Light", size: 10)!,
+        NSStrokeWidthAttributeName : 0
+    ]
+    
+    
+    func setLabel(label: UILabel, fontName: String, size: CGFloat, color: UIColor){
+        
+        label.font = UIFont(name: fontName, size: size)
+        label.textColor = color
+        
+    }
 
 }
 

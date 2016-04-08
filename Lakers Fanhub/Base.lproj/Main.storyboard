@@ -8,7 +8,7 @@
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
-        <!--News Table View Controller-->
+        <!--Source: Hoops Rumors-->
         <scene sceneID="Nly-2J-31C">
             <objects>
                 <tableViewController id="l50-il-oRU" customClass="NewsTableViewController" customModule="Lakers_Fanhub" customModuleProvider="target" sceneMemberID="viewController">
@@ -25,12 +25,12 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="31S-vx-d0r">
-                                            <rect key="frame" x="105.5" y="2" width="261.5" height="17"/>
+                                            <rect key="frame" x="103.5" y="2" width="263.5" height="17"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Author" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B64-AV-nsq">
-                                            <rect key="frame" x="105.5" y="65" width="120" height="12"/>
+                                            <rect key="frame" x="103.5" y="65" width="120" height="12"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="120" id="xbC-GE-F7D"/>
                                             </constraints>
@@ -48,7 +48,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="esm-Sa-hjL">
-                                            <rect key="frame" x="8" y="1" width="77.5" height="77.5"/>
+                                            <rect key="frame" x="8" y="2" width="75.5" height="75.5"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="esm-Sa-hjL" secondAttribute="height" multiplier="1:1" id="vzN-eq-su9"/>
                                             </constraints>
@@ -60,7 +60,7 @@
                                         <constraint firstItem="esm-Sa-hjL" firstAttribute="leading" secondItem="nbU-mJ-ss7" secondAttribute="leading" id="AU6-vf-8a8"/>
                                         <constraint firstItem="31S-vx-d0r" firstAttribute="top" secondItem="nbU-mJ-ss7" secondAttribute="top" constant="2" id="DMc-88-N1Z"/>
                                         <constraint firstItem="esm-Sa-hjL" firstAttribute="leading" secondItem="nbU-mJ-ss7" secondAttribute="leading" constant="-8" id="DMh-rl-Irj"/>
-                                        <constraint firstAttribute="bottom" secondItem="esm-Sa-hjL" secondAttribute="bottom" constant="1" id="GM0-Ma-MzP"/>
+                                        <constraint firstAttribute="bottom" secondItem="esm-Sa-hjL" secondAttribute="bottom" constant="2" id="GM0-Ma-MzP"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="esm-Sa-hjL" secondAttribute="bottom" id="HEz-1y-fNt"/>
                                         <constraint firstItem="31S-vx-d0r" firstAttribute="leading" secondItem="esm-Sa-hjL" secondAttribute="trailing" constant="10" id="HOe-Mn-x3S"/>
                                         <constraint firstItem="esm-Sa-hjL" firstAttribute="top" secondItem="nbU-mJ-ss7" secondAttribute="topMargin" id="KNL-Fq-61o"/>
@@ -76,7 +76,7 @@
                                         <constraint firstItem="B64-AV-nsq" firstAttribute="leading" secondItem="esm-Sa-hjL" secondAttribute="trailing" constant="5" id="hCQ-kh-Huh"/>
                                         <constraint firstItem="esm-Sa-hjL" firstAttribute="leading" secondItem="nbU-mJ-ss7" secondAttribute="leadingMargin" id="hN8-Wp-3s6"/>
                                         <constraint firstItem="esm-Sa-hjL" firstAttribute="leading" secondItem="nbU-mJ-ss7" secondAttribute="leadingMargin" id="hj9-tv-CNz"/>
-                                        <constraint firstItem="esm-Sa-hjL" firstAttribute="top" secondItem="nbU-mJ-ss7" secondAttribute="top" constant="1" id="izw-QP-Y9I"/>
+                                        <constraint firstItem="esm-Sa-hjL" firstAttribute="top" secondItem="nbU-mJ-ss7" secondAttribute="top" constant="2" id="izw-QP-Y9I"/>
                                         <constraint firstItem="esm-Sa-hjL" firstAttribute="leading" secondItem="nbU-mJ-ss7" secondAttribute="leadingMargin" id="lrE-Nh-j0e"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="B64-AV-nsq" secondAttribute="bottom" constant="1" id="pNL-3w-zG7"/>
                                         <constraint firstItem="esm-Sa-hjL" firstAttribute="height" secondItem="nbU-mJ-ss7" secondAttribute="height" multiplier="0.8" id="v9b-GF-ce0"/>
@@ -122,12 +122,20 @@
                             <outlet property="delegate" destination="l50-il-oRU" id="v3a-DL-sS9"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="ar7-KI-4lh"/>
+                    <navigationItem key="navigationItem" title="Source: Hoops Rumors" id="ar7-KI-4lh"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="color" keyPath="titleTextColor">
+                            <color key="value" red="0.29803922770000002" green="0.29803922770000002" blue="0.29803922770000002" alpha="1" colorSpace="calibratedRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="subTitleTextColor">
+                            <color key="value" red="0.40000000600000002" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4VO-Xl-nMG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1394" y="201"/>
+            <point key="canvasLocation" x="933.5" y="-1755.5"/>
         </scene>
         <!--News Detail View Controller-->
         <scene sceneID="SQs-nl-DLx">
@@ -146,7 +154,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FIK-C9-m49" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1844.5" y="200.5"/>
+            <point key="canvasLocation" x="1384.5" y="-1747.5"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="jMA-Z3-tNj">
@@ -166,7 +174,99 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZST-hV-oW9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1393.5" y="920.5"/>
+            <point key="canvasLocation" x="921.5" y="-985.5"/>
+        </scene>
+        <!--Root View Controller-->
+        <scene sceneID="2n7-Jg-twr">
+            <objects>
+                <tableViewController id="kI6-Uk-5BN" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="i1E-r5-dZx">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="ILC-h6-aNl">
+                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ILC-h6-aNl" id="K0u-pq-QLN">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="kI6-Uk-5BN" id="Irh-CL-rUi"/>
+                            <outlet property="delegate" destination="kI6-Uk-5BN" id="2YR-cv-2OZ"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Root View Controller" id="h2Q-fe-NVg"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CGq-qW-gzK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1058" y="-292"/>
+        </scene>
+        <!--Root View Controller-->
+        <scene sceneID="lVy-vc-wVx">
+            <objects>
+                <tableViewController id="buE-Wf-oP3" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="r2d-WU-v5N">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Agm-ju-eb9">
+                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Agm-ju-eb9" id="Kil-YD-W2j">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="buE-Wf-oP3" id="xK2-6v-K5j"/>
+                            <outlet property="delegate" destination="buE-Wf-oP3" id="KuD-4T-kmr"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Root View Controller" id="kNY-5t-hfE"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9xS-sn-vPl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1068" y="398"/>
+        </scene>
+        <!--More-->
+        <scene sceneID="obE-N8-u6L">
+            <objects>
+                <navigationController id="Iw2-jM-paQ" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="More" image="MoreTabItem" id="JcK-OR-mKB"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="AGK-VC-zmZ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="buE-Wf-oP3" kind="relationship" relationship="rootViewController" id="yh4-li-l08"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eY3-AU-vXA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="320" y="386"/>
+        </scene>
+        <!--Schedule-->
+        <scene sceneID="ADt-e6-LRz">
+            <objects>
+                <navigationController id="v4B-w8-6PF" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Schedule" image="CalendarTabItem" id="Vr6-hU-clN"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Jbj-od-07B">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="kI6-Uk-5BN" kind="relationship" relationship="rootViewController" id="dad-eM-w1g"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CVi-lY-m54" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="308" y="-316"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="IP5-wU-TE1">
@@ -180,17 +280,19 @@
                     <connections>
                         <segue destination="HcZ-20-lbB" kind="relationship" relationship="viewControllers" id="IPS-hC-itK"/>
                         <segue destination="BYq-pV-s9N" kind="relationship" relationship="viewControllers" id="Pgi-Sa-SMT"/>
+                        <segue destination="v4B-w8-6PF" kind="relationship" relationship="viewControllers" id="1cV-XR-zNx"/>
+                        <segue destination="Iw2-jM-paQ" kind="relationship" relationship="viewControllers" id="apV-fL-Rq2"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bJd-tB-Xdn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-120" y="531"/>
+            <point key="canvasLocation" x="-896" y="-133"/>
         </scene>
-        <!--Item 1-->
+        <!--News Feed-->
         <scene sceneID="Dba-2N-nRt">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="HcZ-20-lbB" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item 1" id="8X0-5d-4cW"/>
+                    <tabBarItem key="tabBarItem" title="News Feed" image="NewsTabItem" id="8X0-5d-4cW"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="boD-le-Rrj">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -203,13 +305,13 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Whe-na-vAy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="700" y="201"/>
+            <point key="canvasLocation" x="300" y="-1755"/>
         </scene>
-        <!--Item 2-->
+        <!--Social-->
         <scene sceneID="j7C-ZR-n3e">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="BYq-pV-s9N" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item 2" id="uWh-ra-NbD"/>
+                    <tabBarItem key="tabBarItem" title="Social" image="TwitterTabItem" selectedImage="TwitterTabItem" id="uWh-ra-NbD"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="veH-Ch-peC">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -222,7 +324,13 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="REZ-pA-Nl6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="700" y="861"/>
+            <point key="canvasLocation" x="300" y="-1013"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="CalendarTabItem" width="25" height="25"/>
+        <image name="MoreTabItem" width="25" height="25"/>
+        <image name="NewsTabItem" width="25" height="25"/>
+        <image name="TwitterTabItem" width="25" height="25"/>
+    </resources>
 </document>

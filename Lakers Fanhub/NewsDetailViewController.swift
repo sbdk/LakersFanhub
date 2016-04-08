@@ -10,7 +10,7 @@ import UIKit
 import WebKit
 import MBProgressHUD
 
-class NewsDetailViewController: UIViewController, WKNavigationDelegate {
+class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScrollViewDelegate {
     
     var webView: WKWebView!
     var feedURLString: String = ""
@@ -18,8 +18,14 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate {
     
     required init(coder aDecoder: NSCoder) {
         self.webView = WKWebView(frame: CGRectZero)
+        
         super.init(coder: aDecoder)!
         webView.navigationDelegate = self
+//        webView.scrollView.delegate = self
+    }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true
     }
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
@@ -31,10 +37,21 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        tabBarController?.tabBar.hidden = true
+        
+        
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        webView.removeObserver(self, forKeyPath: "estimatedProgress")
+        tabBarController?.tabBar.hidden = false
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
         view.addSubview(webView)
         webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
         
@@ -60,8 +77,24 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate {
        ConvenientView.sharedInstance().showAlertView("Error", message: error.localizedDescription, hostView: self)
     }
     
+    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: ((WKNavigationActionPolicy) -> Void)) {
+        if (navigationAction.navigationType == WKNavigationType.LinkActivated && !navigationAction.request.URL!.host!.lowercaseString.hasPrefix("www.hoopsrumors.com")) {
+            UIApplication.sharedApplication().openURL(navigationAction.request.URL!)
+            decisionHandler(WKNavigationActionPolicy.Cancel)
+        } else {
+            decisionHandler(WKNavigationActionPolicy.Allow)
+        }
+    }
+    
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         progressHUD.progress = 0.0
-        webView.removeObserver(self, forKeyPath: "estimatedProgress")
+        
     }
+//    
+//    func scrollViewDidScroll(scrollView: UIScrollView) {
+//        tabBarController?.tabBar.hidden = true
+//        webView.setNeedsDisplay()
+//    }
+    
+    
 }

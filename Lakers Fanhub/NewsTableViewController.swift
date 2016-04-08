@@ -13,6 +13,8 @@ import UIKit
 class NewsTableViewController: UITableViewController, XMLParserDelegate {
     
     var seedParser: XMLParser!
+    @IBInspectable var titleTextColor: UIColor = UIColor.blackColor()
+    @IBInspectable var subTitleTextColor: UIColor = UIColor.blackColor()
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -47,7 +49,10 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
         let cell = tableView.dequeueReusableCellWithIdentifier("newsTableViewCell") as! NewsTableViewCell
         let feedDic = seedParser.parsedDataArray[indexPath.row]
         cell.imageView!.image = UIImage(named: "HoopsRumors")
+        ConvenientView.sharedInstance().setLabel(cell.cellTitle, fontName: "HelveticaNeue-Medium", size: 14, color: titleTextColor)
         cell.cellTitle.text = feedDic["title"]
+        
+        ConvenientView.sharedInstance().setLabel(cell.cellAuthor, fontName: "Helvetica-Light", size: 12, color: subTitleTextColor)
         cell.cellAuthor.text = feedDic["name"]
         cell.cellFeedPublished.text = feedDic["published"]
 
