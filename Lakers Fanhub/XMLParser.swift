@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+
 @objc protocol XMLParserDelegate{
     func parseWasFinished()
 }
@@ -20,6 +22,7 @@ class XMLParser: NSObject, NSXMLParserDelegate {
     var foundCharacters = ""
     
     var delegate: XMLParserDelegate?
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     func parseWithURL(rssURL: NSURL){
         

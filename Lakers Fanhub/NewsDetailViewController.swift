@@ -15,6 +15,7 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
     var webView: WKWebView!
     var feedURLString: String = ""
     var progressHUD: MBProgressHUD!
+    @IBOutlet weak var shareButton: UIBarButtonItem!
     
     required init(coder aDecoder: NSCoder) {
         self.webView = WKWebView(frame: CGRectZero)
@@ -30,15 +31,18 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "estimatedProgress" {
-            progressHUD.hidden = (webView.estimatedProgress == 1)
+            
             progressHUD.progress = Float(webView.estimatedProgress)
+            if webView.estimatedProgress == 1{
+                progressHUD.hide(true)
+                shareButton.enabled = true
+            }
         }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.hidden = true
-        
         
     }
     
@@ -50,8 +54,7 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
+        shareButton.enabled = false
         view.addSubview(webView)
         webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
         
@@ -63,6 +66,7 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
         progressHUD = MBProgressHUD()
         self.view.addSubview(progressHUD)
         progressHUD.mode = MBProgressHUDMode.DeterminateHorizontalBar
+        progressHUD.animationType = MBProgressHUDAnimation.Fade
         progressHUD.labelText = "Page loading..."
         progressHUD.show(true)
  
@@ -88,13 +92,20 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
     
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         progressHUD.progress = 0.0
-        
     }
-//    
-//    func scrollViewDidScroll(scrollView: UIScrollView) {
-//        tabBarController?.tabBar.hidden = true
-//        webView.setNeedsDisplay()
-//    }
     
+    func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        progressHUD.show(true)
+        shareButton.enabled = false
+    }
     
+    @IBAction func shareButtonTouched(sender: AnyObject) {
+        let shareViewController = UIActivityViewController(activityItems: [feedURLString], applicationActivities: nil)
+        shareViewController.completionWithItemsHandler = {
+            activity, completed, items, error in
+            if completed {
+            }
+        }
+        presentViewController(shareViewController, animated: true, completion: nil)
+    }
 }

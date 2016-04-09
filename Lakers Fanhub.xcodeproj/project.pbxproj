@@ -18,6 +18,7 @@
 		BEB5BEC81CB56824001AD651 /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BEC71CB56824001AD651 /* XMLParser.swift */; };
 		BEB5BECA1CB6EF8D001AD651 /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */; };
 		BEB5BECE1CB74C56001AD651 /* NewsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BECD1CB74C56001AD651 /* NewsDetailViewController.swift */; };
+		BEB5BED01CB87659001AD651 /* ConvenientData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BECF1CB87659001AD651 /* ConvenientData.swift */; };
 		BEE7886A1CB4854400A98F1D /* NewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE788691CB4854400A98F1D /* NewsTableViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +59,7 @@
 		BEB5BEC71CB56824001AD651 /* XMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParser.swift; sourceTree = "<group>"; };
 		BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
 		BEB5BECD1CB74C56001AD651 /* NewsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsDetailViewController.swift; sourceTree = "<group>"; };
+		BEB5BECF1CB87659001AD651 /* ConvenientData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvenientData.swift; sourceTree = "<group>"; };
 		BEE788691CB4854400A98F1D /* NewsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -134,6 +136,7 @@
 				BEB5BECD1CB74C56001AD651 /* NewsDetailViewController.swift */,
 				BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */,
 				BE5E327D1CB3888900D8E311 /* ConvenientView.swift */,
+				BEB5BECF1CB87659001AD651 /* ConvenientData.swift */,
 				BE5E327F1CB3888900D8E311 /* Main.storyboard */,
 				BE5E32821CB3888900D8E311 /* Assets.xcassets */,
 				BE5E32841CB3888900D8E311 /* LaunchScreen.storyboard */,
@@ -347,6 +350,7 @@
 				BEB5BEC81CB56824001AD651 /* XMLParser.swift in Sources */,
 				BEE7886A1CB4854400A98F1D /* NewsTableViewController.swift in Sources */,
 				BE5E327E1CB3888900D8E311 /* ConvenientView.swift in Sources */,
+				BEB5BED01CB87659001AD651 /* ConvenientData.swift in Sources */,
 				BE5E327C1CB3888900D8E311 /* AppDelegate.swift in Sources */,
 				BEB5BECA1CB6EF8D001AD651 /* NewsTableViewCell.swift in Sources */,
 			);
