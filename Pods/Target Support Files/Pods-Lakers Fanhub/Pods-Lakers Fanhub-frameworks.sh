@@ -85,9 +85,11 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-Lakers Fanhub/Alamofire.framework"
+  install_framework "Pods-Lakers Fanhub/BTNavigationDropdownMenu.framework"
   install_framework "Pods-Lakers Fanhub/MBProgressHUD.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-Lakers Fanhub/Alamofire.framework"
+  install_framework "Pods-Lakers Fanhub/BTNavigationDropdownMenu.framework"
   install_framework "Pods-Lakers Fanhub/MBProgressHUD.framework"
 fi

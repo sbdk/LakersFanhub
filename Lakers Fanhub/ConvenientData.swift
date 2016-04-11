@@ -14,4 +14,9 @@ struct ConvenientData {
     let lakersPurpleColor: UIColor = UIColor(red: 85/255.0, green: 37/255.0, blue: 130/255.0, alpha: 1.0)
     let lakersGoldColor: UIColor = UIColor(red: 253/255.0, green: 185/255.0, blue: 39/255.0, alpha: 1.0)
     
+    let newsSourceDict = [
+        "Hoops Rumors": "http://www.hoopsrumors.com/los-angeles-lakers/feed/atom",
+        "RealGM Basketball": "http://basketball.realgm.com/rss/wiretap/26/13.xml"
+    ]
+    
 }

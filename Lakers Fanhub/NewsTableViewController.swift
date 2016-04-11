@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import MBProgressHUD
+import BTNavigationDropdownMenu
 
 
 class NewsTableViewController: UITableViewController, XMLParserDelegate {
@@ -17,6 +18,7 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
     var loadingHUD: MBProgressHUD!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var newsSeeds = [[String:String]]()
+    var newsSoucreString: String!
     
     @IBInspectable var titleTextColor: UIColor = UIColor.blackColor()
     @IBInspectable var subTitleTextColor: UIColor = UIColor.blackColor()
@@ -27,19 +29,50 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadingHUD = MBProgressHUD()
-        tableView.addSubview(loadingHUD)
+        
+        ConvenientView.sharedInstance().setNaviBar(self)
+        
+        let newsSourceArray = ["Hoops Rumors", "RealGM Basketball", "Lakers Nation"]
+        let menuView = BTNavigationDropdownMenu(navigationController: self.navigationController, title: newsSourceArray.first!, items: newsSourceArray)
+        menuView.cellTextLabelColor = ConvenientData().lakersGoldColor
+        menuView.cellTextLabelFont = UIFont(name: "HelveticaNeue-Medium", size: 14)
+        self.navigationItem.titleView = menuView
+        newsSoucreString = newsSourceArray.first
+        
+        menuView.didSelectItemAtIndexHandler = {(indexPath: Int) -> () in
+            
+            switch newsSourceArray[indexPath]{
+                
+            case "Hoops Rumors":
+                self.newsSoucreString = newsSourceArray[indexPath]
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)){
+                  self.startParseFeeds()
+                };
+                
+            case "RealGM Basketball":
+                self.newsSoucreString = newsSourceArray[indexPath]
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)){
+                    self.startParseFeeds()
+                };
+                
+            default: break
+            }
+            
+            
+        }
+        
+        
+        
+        
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        loadingHUD.mode = MBProgressHUDMode.Indeterminate
-        loadingHUD.dimBackground = true
+        loadingHUD = MBProgressHUD.showHUDAddedTo(self.navigationController?.view, animated: true)
+        loadingHUD.opacity = 0.6
         loadingHUD.labelText = "Loading news feeds..."
-        loadingHUD.show(true)
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)){
             self.startParseFeeds()
         }
-        refreshControl?.backgroundColor = ConvenientData().lakersPurpleColor
-        refreshControl?.tintColor = ConvenientData().lakersGoldColor
+        refreshControl?.backgroundColor = UIColor.whiteColor()
         refreshControl?.addTarget(self, action: #selector(NewsTableViewController.refreshTable(_:)), forControlEvents: UIControlEvents.ValueChanged)
   
 //        tableView.cellLayoutMarginsFollowReadableWidth = false
@@ -47,6 +80,8 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
 //        tableView.layoutMargins = UIEdgeInsetsZero
         tableView.contentInset = UIEdgeInsetsMake(0, -8, 0, 0)
 //        tableView.cellLayoutMarginsFollowReadableWidth = false
+        
+        
 
     }
     
@@ -54,6 +89,7 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
         
         print("parsed Finished successfully, reload tableData")
         newsSeeds = seedParser.parsedDataArray
+//        print(newsSeeds)
         dispatch_async(dispatch_get_main_queue()){
             self.loadingHUD.hide(true)
             self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
@@ -72,11 +108,11 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
         ConvenientView.sharedInstance().setLabel(cell.cellTitle, fontName: "HelveticaNeue-Medium", size: 14, color: titleTextColor)
         cell.cellTitle.text = feedDic["title"]
         
-        ConvenientView.sharedInstance().setLabel(cell.cellAuthor, fontName: "HelveticaNeue-Light", size: 12, color: subTitleTextColor)
-        cell.cellAuthor.text = feedDic["name"]
+//        ConvenientView.sharedInstance().setLabel(cell.cellAuthor, fontName: "HelveticaNeue-Light", size: 12, color: subTitleTextColor)
+//        cell.cellAuthor.text = feedDic["name"]
         
         ConvenientView.sharedInstance().setLabel(cell.cellFeedPublished, fontName: "HelveticaNeue-Light", size: 12, color: subTitleTextColor)
-        cell.cellFeedPublished.text = feedDic["published"]
+        cell.cellFeedPublished.text = feedDic["published"] ?? feedDic["pubDate"]
 
 //        cell.preservesSuperviewLayoutMargins = false
 //        cell.layoutMargins = UIEdgeInsetsZero
@@ -102,12 +138,16 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
     }
     
     func startParseFeeds(){
-        let url = NSURL(string: "http://www.hoopsrumors.com/los-angeles-lakers/feed/atom")
+        seedParser.parsedDataArray = []
+        seedParser.currentDataDic = [String:String]()
+        let url = NSURL(string: ConvenientData().newsSourceDict[newsSoucreString]!)
         seedParser.delegate = self
         seedParser.parseWithURL(url!)
     }
     
     func refreshTable(refreshControl: UIRefreshControl){
+        newsSeeds = [[String:String]]()
+        tableView.reloadData()
         startParseFeeds()
         refreshControl.endRefreshing()
     }

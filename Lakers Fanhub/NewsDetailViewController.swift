@@ -43,11 +43,12 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.hidden = true
-        
+        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+
         webView.removeObserver(self, forKeyPath: "estimatedProgress")
         tabBarController?.tabBar.hidden = false
     }
@@ -56,8 +57,6 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
         super.viewDidLoad()
         shareButton.enabled = false
         view.addSubview(webView)
-        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
-        
         webView.translatesAutoresizingMaskIntoConstraints = false
         let height = NSLayoutConstraint(item: webView, attribute: .Height, relatedBy: .Equal, toItem: view, attribute: .Height, multiplier: 1, constant: 0)
         let width = NSLayoutConstraint(item: webView, attribute: .Width, relatedBy: .Equal, toItem: view, attribute: .Width, multiplier: 1, constant: 0)
@@ -66,7 +65,7 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
         progressHUD = MBProgressHUD()
         self.view.addSubview(progressHUD)
         progressHUD.mode = MBProgressHUDMode.DeterminateHorizontalBar
-        progressHUD.animationType = MBProgressHUDAnimation.Fade
+        progressHUD.opacity = 0.6
         progressHUD.labelText = "Page loading..."
         progressHUD.show(true)
  
@@ -104,6 +103,13 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
         shareViewController.completionWithItemsHandler = {
             activity, completed, items, error in
             if completed {
+                let actionHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+                actionHUD.mode = MBProgressHUDMode.CustomView
+                let image = UIImage(named: "CheckMark")
+                actionHUD.customView = UIImageView.init(image: image)
+                actionHUD.square = true
+                actionHUD.labelText = "Done"
+                actionHUD.hide(true, afterDelay: 2.0)
             }
         }
         presentViewController(shareViewController, animated: true, completion: nil)

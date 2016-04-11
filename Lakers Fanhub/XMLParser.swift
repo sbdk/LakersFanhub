@@ -34,15 +34,28 @@ class XMLParser: NSObject, NSXMLParserDelegate {
     }
     
     func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+        
          currentElement = elementName
          attributesDic = attributeDict
+
          if currentElement == "link" && attributesDic["rel"] == "alternate"{
             foundCharacters += attributesDic["href"]!
-        }
+         }
     }
     
     func parser(parser: NSXMLParser, foundCharacters string: String) {
-        if (currentElement == "name" || (currentElement == "title" && attributesDic["type"] != "text") || currentElement == "published"){
+        if (
+            //condition for Hoops Rumors
+            currentElement == "name"
+            || (currentElement == "title" && attributesDic["type"] != "text")
+            || currentElement == "published"
+                
+            //condition for RealGM Basketball
+            || currentElement == "link" && attributesDic.isEmpty
+            || currentElement == "pubDate"
+            || currentElement == "title" && attributesDic.isEmpty
+            )
+        {
             foundCharacters += string
         }
     }
@@ -57,13 +70,12 @@ class XMLParser: NSObject, NSXMLParserDelegate {
             currentDataDic[currentElement] = foundCharacters
             
             
-            if currentElement == "published"{
+            if currentElement == "published" || currentElement == "pubDate" {
                 parsedDataArray.append(currentDataDic)
             }
             foundCharacters = ""
             currentElement = ""
             attributesDic = [String:String]()
-            
         }
     }
     

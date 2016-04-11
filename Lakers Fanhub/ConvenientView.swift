@@ -29,5 +29,13 @@ class ConvenientView: NSObject {
         label.font = UIFont(name: fontName, size: size)
         label.textColor = color
     }
+    
+    func setNaviBar(rootViewController: UIViewController){
+        let naviBar = rootViewController.navigationController?.navigationBar
+        naviBar!.barTintColor = ConvenientData().lakersPurpleColor
+        naviBar!.titleTextAttributes = [NSForegroundColorAttributeName: ConvenientData().lakersGoldColor]
+        naviBar!.barStyle = UIBarStyle.BlackOpaque
+        naviBar!.translucent = false
+    }
 }
 
