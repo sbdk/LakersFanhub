@@ -16,7 +16,10 @@ struct ConvenientData {
     
     let newsSourceDict = [
         "Hoops Rumors": "http://www.hoopsrumors.com/los-angeles-lakers/feed/atom",
-        "RealGM Basketball": "http://basketball.realgm.com/rss/wiretap/26/13.xml"
+        "RealGM Basketball": "http://basketball.realgm.com/rss/wiretap/26/13.xml",
+        "NBA.com":"http://www.nba.com/lakers/rss.xml",
+        "LA Times":"http://www.latimes.com/sports/lakers/rss2.0.xml",
+        "ESPN": "http://espn.go.com/espn/rss/nba/news"
     ]
     
 }

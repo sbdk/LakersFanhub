@@ -6,6 +6,7 @@
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--News Table View Controller-->
@@ -187,34 +188,58 @@
             </objects>
             <point key="canvasLocation" x="921.5" y="-985.5"/>
         </scene>
-        <!--Root View Controller-->
-        <scene sceneID="2n7-Jg-twr">
+        <!--DailyMatchWebViewController-->
+        <scene sceneID="OpY-L3-vCt">
             <objects>
-                <tableViewController id="kI6-Uk-5BN" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="i1E-r5-dZx">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                <viewController id="i57-wl-uEo" userLabel="DailyMatchWebViewController" customClass="DailyMatchViewController" customModule="Lakers_Fanhub" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jhE-l0-mgi"/>
+                        <viewControllerLayoutGuide type="bottom" id="uku-G6-abk"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jGw-oW-fzP">
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="ILC-h6-aNl">
-                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ILC-h6-aNl" id="K0u-pq-QLN">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="kI6-Uk-5BN" id="Irh-CL-rUi"/>
-                            <outlet property="delegate" destination="kI6-Uk-5BN" id="2YR-cv-2OZ"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="h2Q-fe-NVg"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="CGq-qW-gzK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="WDx-c8-xfc">
+                        <leftBarButtonItems>
+                            <barButtonItem image="HomeItem" id="YzB-tb-anU">
+                                <connections>
+                                    <action selector="homeButtonTouched:" destination="i57-wl-uEo" id="s3v-gr-se8"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="Refresh" id="18O-0B-xgK">
+                                <connections>
+                                    <action selector="reloadPage:" destination="i57-wl-uEo" id="ySU-uR-90h"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
+                        <rightBarButtonItems>
+                            <barButtonItem image="RightArrow" id="c7j-ma-qBN">
+                                <connections>
+                                    <action selector="forward:" destination="i57-wl-uEo" id="ieh-Mb-5Jp"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="LeftArrow" id="dSM-JL-aaB">
+                                <connections>
+                                    <action selector="backward:" destination="i57-wl-uEo" id="zvW-PS-K7q"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="backwardButton" destination="dSM-JL-aaB" id="xwe-l4-Fqk"/>
+                        <outlet property="forwardButton" destination="c7j-ma-qBN" id="Up2-go-Stu"/>
+                        <outlet property="reloadButton" destination="18O-0B-xgK" id="vFf-2N-xGQ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cqY-sz-1M8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1058" y="-292"/>
+            <point key="canvasLocation" x="928.5" y="-263.5"/>
         </scene>
         <!--Root View Controller-->
         <scene sceneID="lVy-vc-wVx">
@@ -243,7 +268,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9xS-sn-vPl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1068" y="398"/>
+            <point key="canvasLocation" x="1072" y="566"/>
         </scene>
         <!--More-->
         <scene sceneID="obE-N8-u6L">
@@ -260,24 +285,24 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eY3-AU-vXA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="320" y="386"/>
+            <point key="canvasLocation" x="300" y="566"/>
         </scene>
-        <!--Schedule-->
+        <!--Daily Match-->
         <scene sceneID="ADt-e6-LRz">
             <objects>
                 <navigationController id="v4B-w8-6PF" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Schedule" image="CalendarTabItem" id="Vr6-hU-clN"/>
+                    <tabBarItem key="tabBarItem" title="Daily Match" image="CalendarTabItem" id="Vr6-hU-clN"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Jbj-od-07B">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="kI6-Uk-5BN" kind="relationship" relationship="rootViewController" id="dad-eM-w1g"/>
+                        <segue destination="i57-wl-uEo" kind="relationship" relationship="rootViewController" id="wUO-xY-cxc"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CVi-lY-m54" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="308" y="-316"/>
+            <point key="canvasLocation" x="300" y="-216"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="IP5-wU-TE1">
@@ -359,8 +384,12 @@
     </scenes>
     <resources>
         <image name="CalendarTabItem" width="25" height="25"/>
+        <image name="HomeItem" width="25" height="25"/>
+        <image name="LeftArrow" width="25" height="25"/>
         <image name="MoreTabItem" width="25" height="25"/>
         <image name="NewsTabItem" width="25" height="25"/>
+        <image name="Refresh" width="25" height="25"/>
+        <image name="RightArrow" width="25" height="25"/>
         <image name="TwitterTabItem" width="25" height="25"/>
     </resources>
 </document>

@@ -16,6 +16,7 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
     
     var seedParser = XMLParser()
     var loadingHUD: MBProgressHUD!
+    var menuView: BTNavigationDropdownMenu!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var newsSeeds = [[String:String]]()
     var newsSoucreString: String!
@@ -29,45 +30,44 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        ConvenientView.sharedInstance().setDarkNaviBar(self)
+        tabBarController?.tabBar.tintColor = ConvenientData().lakersPurpleColor
         
-        ConvenientView.sharedInstance().setNaviBar(self)
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        loadingHUD = MBProgressHUD.showHUDAddedTo(tableView, animated: true)
+        loadingHUD.opacity = 0.6
+        loadingHUD.labelText = "Loading news feeds..."
         
-        let newsSourceArray = ["Hoops Rumors", "RealGM Basketball", "Lakers Nation"]
-        let menuView = BTNavigationDropdownMenu(navigationController: self.navigationController, title: newsSourceArray.first!, items: newsSourceArray)
+        let newsSourceArray = ["Hoops Rumors", "RealGM Basketball", "NBA.com", "ESPN", "LA Times"]
+        menuView = BTNavigationDropdownMenu(navigationController: self.navigationController, title: newsSourceArray.first!, items: newsSourceArray)
         menuView.cellTextLabelColor = ConvenientData().lakersGoldColor
         menuView.cellTextLabelFont = UIFont(name: "HelveticaNeue-Medium", size: 14)
         self.navigationItem.titleView = menuView
         newsSoucreString = newsSourceArray.first
         
         menuView.didSelectItemAtIndexHandler = {(indexPath: Int) -> () in
-            
-            switch newsSourceArray[indexPath]{
-                
-            case "Hoops Rumors":
-                self.newsSoucreString = newsSourceArray[indexPath]
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)){
-                  self.startParseFeeds()
-                };
-                
-            case "RealGM Basketball":
+            self.tableView.addSubview(self.loadingHUD)
+            self.loadingHUD.show(true)
+            func switchNewsFeed(){
                 self.newsSoucreString = newsSourceArray[indexPath]
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)){
                     self.startParseFeeds()
                 };
-                
+            }
+            switch newsSourceArray[indexPath]{
+            case "Hoops Rumors":
+                switchNewsFeed()
+            case "RealGM Basketball":
+                switchNewsFeed()
+            case "NBA.com":
+                switchNewsFeed()
+            case "LA Times":
+                switchNewsFeed()
+            case "ESPN":
+                switchNewsFeed()
             default: break
             }
-            
-            
-        }
-        
-        
-        
-        
-        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        loadingHUD = MBProgressHUD.showHUDAddedTo(self.navigationController?.view, animated: true)
-        loadingHUD.opacity = 0.6
-        loadingHUD.labelText = "Loading news feeds..."
+        }  
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)){
             self.startParseFeeds()

@@ -19,10 +19,8 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
     
     required init(coder aDecoder: NSCoder) {
         self.webView = WKWebView(frame: CGRectZero)
-        
         super.init(coder: aDecoder)!
         webView.navigationDelegate = self
-//        webView.scrollView.delegate = self
     }
     
     override func prefersStatusBarHidden() -> Bool {
@@ -42,6 +40,7 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.navigationBar.tintColor = ConvenientData().lakersGoldColor
         tabBarController?.tabBar.hidden = true
         webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
     }
@@ -81,16 +80,18 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
     }
     
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: ((WKNavigationActionPolicy) -> Void)) {
-        if (navigationAction.navigationType == WKNavigationType.LinkActivated && !navigationAction.request.URL!.host!.lowercaseString.hasPrefix("www.hoopsrumors.com")) {
-            UIApplication.sharedApplication().openURL(navigationAction.request.URL!)
-            decisionHandler(WKNavigationActionPolicy.Cancel)
-        } else {
-            decisionHandler(WKNavigationActionPolicy.Allow)
-        }
+        decisionHandler(WKNavigationActionPolicy.Allow)
+//        if (navigationAction.navigationType == WKNavigationType.LinkActivated && !navigationAction.request.URL!.host!.lowercaseString.hasPrefix("www.hoopsrumors.com")) {
+//            UIApplication.sharedApplication().openURL(navigationAction.request.URL!)
+//            decisionHandler(WKNavigationActionPolicy.Cancel)
+//        } else {
+//            decisionHandler(WKNavigationActionPolicy.Allow)
+//        }
     }
     
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         progressHUD.progress = 0.0
+        feedURLString = String(webView.URL!)
     }
     
     func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {

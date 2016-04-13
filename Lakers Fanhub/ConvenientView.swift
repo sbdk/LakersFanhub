@@ -30,11 +30,19 @@ class ConvenientView: NSObject {
         label.textColor = color
     }
     
-    func setNaviBar(rootViewController: UIViewController){
+    func setDarkNaviBar(rootViewController: UIViewController){
         let naviBar = rootViewController.navigationController?.navigationBar
         naviBar!.barTintColor = ConvenientData().lakersPurpleColor
         naviBar!.titleTextAttributes = [NSForegroundColorAttributeName: ConvenientData().lakersGoldColor]
-        naviBar!.barStyle = UIBarStyle.BlackOpaque
+        naviBar!.barStyle = UIBarStyle.Black
+        naviBar!.translucent = false
+    }
+    
+    func setLightNaviBar(rootViewController: UIViewController){
+        let naviBar = rootViewController.navigationController?.navigationBar
+        naviBar!.barTintColor = UIColor.whiteColor()
+        naviBar!.titleTextAttributes = [NSForegroundColorAttributeName: ConvenientData().lakersPurpleColor]
+        naviBar!.barStyle = UIBarStyle.Default
         naviBar!.translucent = false
     }
 }
