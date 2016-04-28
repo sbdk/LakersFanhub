@@ -35,13 +35,24 @@ class ClosestFansViewController: UIViewController, MCBrowserViewControllerDelega
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.peerDidChangeStateWithNotification(_:)), name: "MCDidChangeStateNotification", object: nil)
     }
     
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return connectedDevices.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath)
+        cell.textLabel!.text = connectedDevices[indexPath.row] as? String
+        return cell
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 50.0
+    }
     
     @IBAction func browseForDevices(sender: AnyObject) {
-        
         mcManager.setupMCBrowser()
         mcManager.browser.delegate = self
         self.presentViewController(mcManager.browser, animated: true, completion: nil)
-        
     }
     
     
@@ -50,12 +61,14 @@ class ClosestFansViewController: UIViewController, MCBrowserViewControllerDelega
     }
     
     @IBAction func disconnect(sender: AnyObject) {
-        
+        mcManager.session.disconnect()
+        deviceNameTextField.enabled = true
+        connectedDevices.removeAllObjects()
+        connectedDeviceTableView.reloadData()
     }
 
     func browserViewControllerDidFinish(browserViewController: MCBrowserViewController) {
         mcManager.browser.dismissViewControllerAnimated(true, completion: nil)
-        
     }
     
     func browserViewControllerWasCancelled(browserViewController: MCBrowserViewController) {
@@ -80,8 +93,14 @@ class ClosestFansViewController: UIViewController, MCBrowserViewControllerDelega
     
     func peerDidChangeStateWithNotification(notification: NSNotification){
         let peerID = notification.userInfo!["peerID"] as! MCPeerID
+        print("get peerID: \(peerID)")
         let peerDisplayName = peerID.displayName
         let state = notification.userInfo!["state"] as! Int
+        print("get state value: \(state)")
+        
+        print("connecting rawValue: \(MCSessionState.Connecting.rawValue)")
+        print("connected rawValue: \(MCSessionState.Connected.rawValue)")
+        print("NotConnected rawValue: \(MCSessionState.NotConnected.rawValue)")
         
         if state != MCSessionState.Connecting.rawValue {
             if state == MCSessionState.Connected.rawValue {
@@ -93,9 +112,8 @@ class ClosestFansViewController: UIViewController, MCBrowserViewControllerDelega
                     connectedDevices.removeObjectAtIndex(indexOfPeer)
                 }
             }
-            
             connectedDeviceTableView.reloadData()
-            var peerExist = (mcManager.session.connectedPeers.count == 0)
+            let peerExist = (mcManager.session.connectedPeers.count == 0)
             disconnectButton.enabled = !peerExist
             deviceNameTextField.enabled = peerExist
         }

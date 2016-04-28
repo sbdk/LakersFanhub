@@ -36,7 +36,7 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         loadingHUD = MBProgressHUD.showHUDAddedTo(tableView, animated: true)
         loadingHUD.opacity = 0.6
-        loadingHUD.labelText = "Loading news feeds..."
+        loadingHUD.labelText = "Loading feeds..."
         
         let newsSourceArray = ["Hoops Rumors", "RealGM Basketball", "NBA.com", "ESPN", "LA Times"]
         menuView = BTNavigationDropdownMenu(navigationController: self.navigationController, title: newsSourceArray.first!, items: newsSourceArray)

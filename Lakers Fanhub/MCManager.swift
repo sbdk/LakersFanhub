@@ -25,6 +25,7 @@ class MCManager: NSObject, MCSessionDelegate {
     func session(session: MCSession, peer peerID: MCPeerID, didChangeState state: MCSessionState) {
         
         var dict:[String:AnyObject] = ["peerID":peerID, "state": state.rawValue]
+        print("state rawValue: \(state.rawValue)")
         NSNotificationCenter.defaultCenter().postNotificationName("MCDidChangeStateNotification", object: nil, userInfo: dict)
         
     }
