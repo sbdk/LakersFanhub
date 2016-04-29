@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7C15A9154E6AAB8FF5285CDC /* Pods_Lakers_Fanhub.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0112825CDFDF6E893622A791 /* Pods_Lakers_Fanhub.framework */; };
+		BE35A1781CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE35A1771CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift */; };
 		BE573E771CBD91FC0031E00C /* DailyMatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE573E761CBD91FC0031E00C /* DailyMatchViewController.swift */; };
 		BE5E327C1CB3888900D8E311 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5E327B1CB3888900D8E311 /* AppDelegate.swift */; };
 		BE5E327E1CB3888900D8E311 /* ConvenientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5E327D1CB3888900D8E311 /* ConvenientView.swift */; };
@@ -46,6 +47,7 @@
 		0112825CDFDF6E893622A791 /* Pods_Lakers_Fanhub.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lakers_Fanhub.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		85DE48EB596B6F942B84DCF0 /* Pods-Lakers Fanhub.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lakers Fanhub.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Lakers Fanhub/Pods-Lakers Fanhub.debug.xcconfig"; sourceTree = "<group>"; };
 		8EC0489A10AFA342DA03A69C /* Pods-Lakers Fanhub.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lakers Fanhub.release.xcconfig"; path = "Pods/Target Support Files/Pods-Lakers Fanhub/Pods-Lakers Fanhub.release.xcconfig"; sourceTree = "<group>"; };
+		BE35A1771CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosestFansBrowserViewController.swift; sourceTree = "<group>"; };
 		BE573E761CBD91FC0031E00C /* DailyMatchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyMatchViewController.swift; sourceTree = "<group>"; };
 		BE5E32781CB3888900D8E311 /* Lakers Fanhub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lakers Fanhub.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE5E327B1CB3888900D8E311 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 				BEB5BECD1CB74C56001AD651 /* NewsDetailViewController.swift */,
 				BE573E761CBD91FC0031E00C /* DailyMatchViewController.swift */,
 				BE8E6BDC1CC04D9C00B2B397 /* ClosestFansViewController.swift */,
+				BE35A1771CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift */,
 				BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */,
 				BE5E327D1CB3888900D8E311 /* ConvenientView.swift */,
 				BEB5BECF1CB87659001AD651 /* ConvenientData.swift */,
@@ -356,6 +359,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEB5BECE1CB74C56001AD651 /* NewsDetailViewController.swift in Sources */,
+				BE35A1781CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift in Sources */,
 				BEB5BEC81CB56824001AD651 /* XMLParser.swift in Sources */,
 				BE8E6BDD1CC04D9C00B2B397 /* ClosestFansViewController.swift in Sources */,
 				BEE7886A1CB4854400A98F1D /* NewsTableViewController.swift in Sources */,

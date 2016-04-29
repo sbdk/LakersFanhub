@@ -12,9 +12,11 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var mcManager: MCManager!
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 //        window?.tintColor = ConvenientData().lakersGoldColor
+        mcManager = MCManager()
         return true
     }
 

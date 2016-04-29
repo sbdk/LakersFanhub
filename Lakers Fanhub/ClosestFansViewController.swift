@@ -9,14 +9,15 @@
 import UIKit
 import MultipeerConnectivity
 
-class ClosestFansViewController: UIViewController, MCBrowserViewControllerDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var deviceNameTextField: UITextField!
     @IBOutlet weak var visableSwitch: UISwitch!
     @IBOutlet weak var connectedDeviceTableView: UITableView!
     @IBOutlet weak var disconnectButton: UIButton!
     
-    var mcManager: MCManager!
+//    var mcManager: MCManager!
     var connectedDevices: NSMutableArray!
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -28,11 +29,18 @@ class ClosestFansViewController: UIViewController, MCBrowserViewControllerDelega
         connectedDeviceTableView.delegate = self
         connectedDeviceTableView.dataSource = self
         connectedDevices = []
-        mcManager = MCManager.sharedInstance()
-        mcManager.setupPeerAndSessionWithDisplayName(UIDevice.currentDevice().name)
-        mcManager.advertiseSelf(visableSwitch.on)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.peerDidChangeStateWithNotification(_:)), name: "MCDidChangeStateNotification", object: nil)
+        if  visableSwitch.on {
+            appDelegate.mcManager.advertiser.startAdvertisingPeer()
+        } else {
+            appDelegate.mcManager.advertiser.stopAdvertisingPeer()
+        }
+
+//        mcManager = MCManager.sharedInstance()
+//        mcManager.setupPeerAndSessionWithDisplayName(UIDevice.currentDevice().name)
+//        mcManager.advertiseSelf(visableSwitch.on)
+//        
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.peerDidChangeStateWithNotification(_:)), name: "MCDidChangeStateNotification", object: nil)
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -50,72 +58,81 @@ class ClosestFansViewController: UIViewController, MCBrowserViewControllerDelega
     }
     
     @IBAction func browseForDevices(sender: AnyObject) {
-        mcManager.setupMCBrowser()
-        mcManager.browser.delegate = self
-        self.presentViewController(mcManager.browser, animated: true, completion: nil)
+        
+        let browserViewController = self.storyboard?.instantiateViewControllerWithIdentifier("ClosestFansBrowserViewController") as! ClosestFansBrowserViewController
+        presentViewController(browserViewController, animated: true, completion: nil)
+//        mcManager.setupMCBrowser()
+//        mcManager.browser.delegate = self
+//        self.presentViewController(mcManager.browser, animated: true, completion: nil)
     }
     
     
     @IBAction func toggleVisiblity(sender: AnyObject) {
-        mcManager.advertiseSelf(visableSwitch.on)
+//        mcManager.advertiseSelf(visableSwitch.on)
+        if  visableSwitch.on {
+            appDelegate.mcManager.advertiser.startAdvertisingPeer()
+        } else {
+            appDelegate.mcManager.advertiser.stopAdvertisingPeer()
+        }
     }
     
     @IBAction func disconnect(sender: AnyObject) {
-        mcManager.session.disconnect()
+        appDelegate.mcManager.session.disconnect()
+//        mcManager.session.disconnect()
         deviceNameTextField.enabled = true
         connectedDevices.removeAllObjects()
         connectedDeviceTableView.reloadData()
     }
 
-    func browserViewControllerDidFinish(browserViewController: MCBrowserViewController) {
-        mcManager.browser.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func browserViewControllerWasCancelled(browserViewController: MCBrowserViewController) {
-        mcManager.browser.dismissViewControllerAnimated(true, completion: nil)
-    }
+//    func browserViewControllerDidFinish(browserViewController: MCBrowserViewController) {
+//        mcManager.browser.dismissViewControllerAnimated(true, completion: nil)
+//    }
+//    
+//    func browserViewControllerWasCancelled(browserViewController: MCBrowserViewController) {
+//        mcManager.browser.dismissViewControllerAnimated(true, completion: nil)
+//    }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         deviceNameTextField.resignFirstResponder()
-        mcManager.peerID = nil
-        mcManager.session = nil
-        mcManager.browser = nil
+        appDelegate.mcManager.peerID = nil
+        appDelegate.mcManager.session = nil
         
         if visableSwitch.on {
-            mcManager.advertiser.stop()
+            appDelegate.mcManager.advertiser.stopAdvertisingPeer()
         }
-        mcManager.advertiser = nil
-        mcManager.setupPeerAndSessionWithDisplayName(deviceNameTextField.text!)
-        mcManager.advertiseSelf(visableSwitch.on)
-        
+        appDelegate.mcManager.advertiser = nil
+        appDelegate.mcManager.setupPeerAndSessionWithDisplayName(deviceNameTextField.text!)
+        if visableSwitch.on {
+            appDelegate.mcManager.advertiser.startAdvertisingPeer()
+        }
         return true
     }
     
-    func peerDidChangeStateWithNotification(notification: NSNotification){
-        let peerID = notification.userInfo!["peerID"] as! MCPeerID
-        print("get peerID: \(peerID)")
-        let peerDisplayName = peerID.displayName
-        let state = notification.userInfo!["state"] as! Int
-        print("get state value: \(state)")
-        
-        print("connecting rawValue: \(MCSessionState.Connecting.rawValue)")
-        print("connected rawValue: \(MCSessionState.Connected.rawValue)")
-        print("NotConnected rawValue: \(MCSessionState.NotConnected.rawValue)")
-        
-        if state != MCSessionState.Connecting.rawValue {
-            if state == MCSessionState.Connected.rawValue {
-                connectedDevices.addObject(peerDisplayName)
-            }
-            else if state == MCSessionState.NotConnected.rawValue {
-                if connectedDevices.count > 0 {
-                    let indexOfPeer = connectedDevices.indexOfObject(peerDisplayName)
-                    connectedDevices.removeObjectAtIndex(indexOfPeer)
-                }
-            }
-            connectedDeviceTableView.reloadData()
-            let peerExist = (mcManager.session.connectedPeers.count == 0)
-            disconnectButton.enabled = !peerExist
-            deviceNameTextField.enabled = peerExist
-        }
-    }
+//    func peerDidChangeStateWithNotification(notification: NSNotification){
+//        let peerID = notification.userInfo!["peerID"] as! MCPeerID
+//        print("get peerID: \(peerID)")
+//        let peerDisplayName = peerID.displayName
+//        let state = notification.userInfo!["state"] as! Int
+//        print("get state value: \(state)")
+//        
+//        print("connecting rawValue: \(MCSessionState.Connecting.rawValue)")
+//        print("connected rawValue: \(MCSessionState.Connected.rawValue)")
+//        print("NotConnected rawValue: \(MCSessionState.NotConnected.rawValue)")
+//        
+//        if state != MCSessionState.Connecting.rawValue {
+//            if state == MCSessionState.Connected.rawValue {
+//                connectedDevices.addObject(peerDisplayName)
+//            }
+//            else if state == MCSessionState.NotConnected.rawValue {
+//                if connectedDevices.count > 0 {
+//                    let indexOfPeer = connectedDevices.indexOfObject(peerDisplayName)
+//                    connectedDevices.removeObjectAtIndex(indexOfPeer)
+//                }
+//            }
+//            connectedDeviceTableView.reloadData()
+//            let peerExist = (mcManager.session.connectedPeers.count == 0)
+//            disconnectButton.enabled = !peerExist
+//            deviceNameTextField.enabled = peerExist
+//        }
+//    }
 }
