@@ -9,7 +9,7 @@
 import UIKit
 import MultipeerConnectivity
 
-class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MCManagerDelegate {
     @IBOutlet weak var deviceNameTextField: UITextField!
     @IBOutlet weak var visableSwitch: UISwitch!
     @IBOutlet weak var connectedDeviceTableView: UITableView!
@@ -55,6 +55,28 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 50.0
+    }
+    
+    func foundPeer() {
+    }
+    
+    func lostPeer() {
+    }
+    
+    func invitationWasReceived(fromPeer: String, invitationHandler: (Bool, MCSession!) -> Void) {
+        let alert = UIAlertController(title: "", message: "\(fromPeer) wants to chat with you.", preferredStyle: UIAlertControllerStyle.Alert)
+        let acceptAction: UIAlertAction = UIAlertAction(title: "Accept", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
+            invitationHandler(true, self.appDelegate.mcManager.session)
+        }
+        let declineAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) {(alertAction) -> Void in
+            invitationHandler(false, nil)
+        }
+        alert.addAction(declineAction)
+        alert.addAction(acceptAction)
+        
+        dispatch_async(dispatch_get_main_queue()){
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
     }
     
     @IBAction func browseForDevices(sender: AnyObject) {

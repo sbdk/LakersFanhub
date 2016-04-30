@@ -14,8 +14,8 @@ protocol MCManagerDelegate {
     
     func lostPeer()
     
-//    func invitationWasReceived(fromPeer: String)
-//    
+    func invitationWasReceived(fromPeer: String, invitationHandler:(Bool, MCSession!) -> Void)
+//
 //    func connectedWithPeer(peerID: MCPeerID)
 }
 
@@ -27,7 +27,7 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
     var advertiser: MCNearbyServiceAdvertiser!
     
     var foundPeers = [MCPeerID]()
-    var invitationHandler: ((Bool, MCSession!)->Void)!
+//    var invitationHandler: ((Bool, MCSession!)->Void)!
     
     var delegate: MCManagerDelegate?
     
@@ -77,7 +77,13 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
     }
     
     func advertiser(advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: NSData?, invitationHandler: (Bool, MCSession) -> Void) {
-        
+        delegate?.invitationWasReceived(peerID.displayName){(Bool, MCSession) in
+            invitationHandler(Bool, MCSession)
+        }
+    }
+    
+    func advertiser(advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: NSError) {
+        print(error.localizedDescription)
     }
     
     func session(session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, withProgress progress: NSProgress) {

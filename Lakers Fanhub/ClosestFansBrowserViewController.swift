@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MultipeerConnectivity
 
 class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MCManagerDelegate {
     
@@ -45,6 +46,11 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
         return 50.0
     }
     
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let selectedPeer = appDelegate.mcManager.foundPeers[indexPath.row] as MCPeerID
+        appDelegate.mcManager.browser.invitePeer(selectedPeer, toSession: appDelegate.mcManager.session, withContext: nil, timeout: 20)
+    }
+    
     func foundPeer() {
         browserTableView.reloadData()
     }
@@ -52,6 +58,10 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
     
     func lostPeer() {
         browserTableView.reloadData()
+    }
+    
+    func invitationWasReceived(fromPeer: String, invitationHandler:(Bool, MCSession!) -> Void){
+        
     }
     
 //    func invitationWasReceived(fromPeer: String)
