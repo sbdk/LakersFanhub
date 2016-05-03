@@ -13,10 +13,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var mcManager: MCManager!
+    var connectedDevies: NSMutableArray!
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 //        window?.tintColor = ConvenientData().lakersGoldColor
         mcManager = MCManager()
+        connectedDevies = []
         return true
     }
 

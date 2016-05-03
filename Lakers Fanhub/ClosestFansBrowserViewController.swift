@@ -42,8 +42,14 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("browserTableCell")! as UITableViewCell
-        cell.textLabel?.text = appDelegate.mcManager.foundPeers[indexPath.row].displayName
-        cell.detailTextLabel?.text = cellDetailText
+        let peerID = appDelegate.mcManager.foundPeers[indexPath.row]
+        cell.textLabel?.text = peerID.displayName
+        
+        if appDelegate.mcManager.connectedPeers.containsObject(peerID){
+            cell.detailTextLabel?.text = "🏀connected"
+        } else {
+            cell.detailTextLabel?.text = cellDetailText
+        }
         return cell
     }
     
@@ -52,12 +58,16 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
         let cell = tableView.cellForRowAtIndexPath(indexPath)
-        cell!.detailTextLabel!.text = "connecting..."
+        let peerID = appDelegate.mcManager.foundPeers[indexPath.row]
         
-        let selectedPeer = appDelegate.mcManager.foundPeers[indexPath.row] as MCPeerID
-        appDelegate.mcManager.browser.invitePeer(selectedPeer, toSession: appDelegate.mcManager.session, withContext: nil, timeout: 10)
-        
+        if appDelegate.mcManager.connectedPeers.containsObject(peerID){
+            
+        } else {
+            cell!.detailTextLabel!.text = "connecting..."
+            appDelegate.mcManager.browser.invitePeer(peerID, toSession: appDelegate.mcManager.session, withContext: nil, timeout: 10)
+        }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
@@ -66,14 +76,15 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
         browserTableView.reloadData()
     }
     
-    
     func lostPeer() {
         print("lost a peer, reload tableview")
         browserTableView.reloadData()
     }
     
-    
     func connectedWithPeer(peerID: MCPeerID) {
+        cellDetailText = "🏀 connected"
+        print(cellDetailText)
+        appDelegate.mcManager.connectedPeers.addObject(peerID)
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -82,14 +93,12 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
 //        browserTableView.reloadData()
     }
     
-    func notConnectedWithPeer() {
+    func notConnectedWithPeer(peerID: MCPeerID) {
         print("not connected to session")
-        cellDetailText = "connect failed"
+        cellDetailText = "💔connect failed"
+        appDelegate.mcManager.connectedPeers.removeObject(peerID)
         browserTableView.reloadData()
     }
-    
-    
-    
     
     @IBAction func cancelButtonTouched(sender: AnyObject) {
         appDelegate.mcManager.foundPeers.removeAll()

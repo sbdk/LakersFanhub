@@ -28,7 +28,7 @@ protocol MCManagerSessionDelegate {
     
     func connectingWithPeer()
     
-    func notConnectedWithPeer()
+    func notConnectedWithPeer(peerID: MCPeerID)
 }
 
 class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdvertiserDelegate {
@@ -39,6 +39,7 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
     var advertiser: MCNearbyServiceAdvertiser!
     
     var foundPeers = [MCPeerID]()
+    var connectedPeers: NSMutableArray!
 //    var invitationHandler: ((Bool, MCSession!)->Void)!
     
     var browserDelegate: MCManagerBrowserDelegate?
@@ -61,6 +62,7 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
         browser.delegate = self
         advertiser = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: nil, serviceType: "lakers-fanhub")
         advertiser.delegate = self
+        connectedPeers = []
     }
     
     func browser(browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
@@ -104,7 +106,7 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
             print("Connecting to session:\(session)")
             sessionDelegate?.connectingWithPeer()
         default:
-            sessionDelegate?.notConnectedWithPeer()
+            sessionDelegate?.notConnectedWithPeer(peerID)
             print("did not connect to session: \(session)")
         }   
     }

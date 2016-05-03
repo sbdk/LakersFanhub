@@ -21,6 +21,8 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        connectedDevices = appDelegate.mcManager.connectedPeers
+        connectedDeviceTableView.reloadData()
     }
     
     override func viewDidLoad() {
@@ -44,7 +46,9 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath)
-        cell.textLabel!.text = connectedDevices[indexPath.row] as? String
+        let peerID = connectedDevices[indexPath.row] as! MCPeerID
+        cell.textLabel!.text = peerID.displayName as String
+        cell.detailTextLabel!.text = "🏀connected"
         return cell
     }
     
@@ -73,14 +77,10 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         
         let browserViewController = self.storyboard?.instantiateViewControllerWithIdentifier("ClosestFansBrowserViewController") as! ClosestFansBrowserViewController
         presentViewController(browserViewController, animated: true, completion: nil)
-//        mcManager.setupMCBrowser()
-//        mcManager.browser.delegate = self
-//        self.presentViewController(mcManager.browser, animated: true, completion: nil)
     }
     
     
     @IBAction func toggleVisiblity(sender: AnyObject) {
-//        mcManager.advertiseSelf(visableSwitch.on)
         if  visableSwitch.on {
             appDelegate.mcManager.advertiser.startAdvertisingPeer()
         } else {
@@ -90,19 +90,10 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     
     @IBAction func disconnect(sender: AnyObject) {
         appDelegate.mcManager.session.disconnect()
-//        mcManager.session.disconnect()
         deviceNameTextField.enabled = true
         connectedDevices.removeAllObjects()
         connectedDeviceTableView.reloadData()
     }
-
-//    func browserViewControllerDidFinish(browserViewController: MCBrowserViewController) {
-//        mcManager.browser.dismissViewControllerAnimated(true, completion: nil)
-//    }
-//    
-//    func browserViewControllerWasCancelled(browserViewController: MCBrowserViewController) {
-//        mcManager.browser.dismissViewControllerAnimated(true, completion: nil)
-//    }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         deviceNameTextField.resignFirstResponder()
@@ -119,32 +110,4 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         }
         return true
     }
-    
-//    func peerDidChangeStateWithNotification(notification: NSNotification){
-//        let peerID = notification.userInfo!["peerID"] as! MCPeerID
-//        print("get peerID: \(peerID)")
-//        let peerDisplayName = peerID.displayName
-//        let state = notification.userInfo!["state"] as! Int
-//        print("get state value: \(state)")
-//        
-//        print("connecting rawValue: \(MCSessionState.Connecting.rawValue)")
-//        print("connected rawValue: \(MCSessionState.Connected.rawValue)")
-//        print("NotConnected rawValue: \(MCSessionState.NotConnected.rawValue)")
-//        
-//        if state != MCSessionState.Connecting.rawValue {
-//            if state == MCSessionState.Connected.rawValue {
-//                connectedDevices.addObject(peerDisplayName)
-//            }
-//            else if state == MCSessionState.NotConnected.rawValue {
-//                if connectedDevices.count > 0 {
-//                    let indexOfPeer = connectedDevices.indexOfObject(peerDisplayName)
-//                    connectedDevices.removeObjectAtIndex(indexOfPeer)
-//                }
-//            }
-//            connectedDeviceTableView.reloadData()
-//            let peerExist = (mcManager.session.connectedPeers.count == 0)
-//            disconnectButton.enabled = !peerExist
-//            deviceNameTextField.enabled = peerExist
-//        }
-//    }
 }
