@@ -9,7 +9,7 @@
 import UIKit
 import MultipeerConnectivity
 
-class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MCManagerDelegate {
+class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MCManagerInvitationDelegate {
     @IBOutlet weak var deviceNameTextField: UITextField!
     @IBOutlet weak var visableSwitch: UISwitch!
     @IBOutlet weak var connectedDeviceTableView: UITableView!
@@ -28,6 +28,7 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         deviceNameTextField.delegate = self
         connectedDeviceTableView.delegate = self
         connectedDeviceTableView.dataSource = self
+        appDelegate.mcManager.invitationDelegate = self
         connectedDevices = []
         
         if  visableSwitch.on {
@@ -35,12 +36,6 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         } else {
             appDelegate.mcManager.advertiser.stopAdvertisingPeer()
         }
-
-//        mcManager = MCManager.sharedInstance()
-//        mcManager.setupPeerAndSessionWithDisplayName(UIDevice.currentDevice().name)
-//        mcManager.advertiseSelf(visableSwitch.on)
-//        
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.peerDidChangeStateWithNotification(_:)), name: "MCDidChangeStateNotification", object: nil)
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -57,13 +52,8 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         return 50.0
     }
     
-    func foundPeer() {
-    }
-    
-    func lostPeer() {
-    }
-    
-    func invitationWasReceived(fromPeer: String, invitationHandler: (Bool, MCSession!) -> Void) {
+    func invitationWasReceived(fromPeer: String, invitationHandler: (Bool, MCSession?) -> Void) {
+        print("received invitatio from: \(fromPeer)")
         let alert = UIAlertController(title: "", message: "\(fromPeer) wants to chat with you.", preferredStyle: UIAlertControllerStyle.Alert)
         let acceptAction: UIAlertAction = UIAlertAction(title: "Accept", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
             invitationHandler(true, self.appDelegate.mcManager.session)
@@ -75,7 +65,7 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         alert.addAction(acceptAction)
         
         dispatch_async(dispatch_get_main_queue()){
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.appDelegate.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
         }
     }
     

@@ -247,6 +247,7 @@
 				TargetAttributes = {
 					BE5E32771CB3888900D8E311 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = SAA638NJ7Q;
 					};
 					BE5E328B1CB3888900D8E311 = {
 						CreatedOnToolsVersion = 7.3;
@@ -511,10 +512,14 @@
 			baseConfigurationReference = 85DE48EB596B6F942B84DCF0 /* Pods-Lakers Fanhub.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Lakers Fanhub/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "sbdk.Lakers-Fanhub";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -523,10 +528,14 @@
 			baseConfigurationReference = 8EC0489A10AFA342DA03A69C /* Pods-Lakers Fanhub.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Lakers Fanhub/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "sbdk.Lakers-Fanhub";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

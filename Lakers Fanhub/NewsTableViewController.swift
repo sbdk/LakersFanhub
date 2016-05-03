@@ -130,6 +130,7 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
         let controller = self.storyboard?.instantiateViewControllerWithIdentifier("NewsDetailViewController") as! NewsDetailViewController
         controller.feedURLString = feedDic["link"]!
         navigationController?.pushViewController(controller, animated: true)
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
     }
     
