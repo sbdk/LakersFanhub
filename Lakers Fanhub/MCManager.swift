@@ -9,26 +9,22 @@
 import MultipeerConnectivity
 
 protocol MCManagerBrowserDelegate {
-    
     func foundPeer()
-    
     func lostPeer()
-
-//    func connectedWithPeer(peerID: MCPeerID)
 }
 
 protocol MCManagerInvitationDelegate {
-    
     func invitationWasReceived(fromPeer: String, invitationHandler:(Bool, MCSession?) -> Void)
 }
 
 protocol MCManagerSessionDelegate {
-    
     func connectedWithPeer(peerID: MCPeerID)
-    
     func connectingWithPeer()
-    
     func notConnectedWithPeer(peerID: MCPeerID)
+}
+
+protocol MCManagerConnectionDelegate {
+    func lostConnection()
 }
 
 class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdvertiserDelegate {
@@ -45,6 +41,7 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
     var browserDelegate: MCManagerBrowserDelegate?
     var invitationDelegate: MCManagerInvitationDelegate?
     var sessionDelegate: MCManagerSessionDelegate?
+    var connectionDelegate: MCManagerConnectionDelegate?
     
 //    class func sharedInstance() -> MCManager {
 //        struct Singleton {
@@ -100,14 +97,17 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
         
         switch state {
         case MCSessionState.Connected:
-            print("Connected to session: \(session)")
+            print("Connected to session")
             sessionDelegate?.connectedWithPeer(peerID)
         case MCSessionState.Connecting:
-            print("Connecting to session:\(session)")
+            print("Connecting to session")
             sessionDelegate?.connectingWithPeer()
         default:
+            print("Did not connect to session")
             sessionDelegate?.notConnectedWithPeer(peerID)
-            print("did not connect to session: \(session)")
+            print("now fire up connectionDelegate")
+            connectionDelegate?.lostConnection()
+            
         }   
     }
     

@@ -23,6 +23,7 @@
 		BEB5BECA1CB6EF8D001AD651 /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */; };
 		BEB5BECE1CB74C56001AD651 /* NewsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BECD1CB74C56001AD651 /* NewsDetailViewController.swift */; };
 		BEB5BED01CB87659001AD651 /* ConvenientData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BECF1CB87659001AD651 /* ConvenientData.swift */; };
+		BED3E67A1CD95759004C24B8 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED3E6791CD95759004C24B8 /* ChatViewController.swift */; };
 		BEE7886A1CB4854400A98F1D /* NewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE788691CB4854400A98F1D /* NewsTableViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +69,7 @@
 		BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
 		BEB5BECD1CB74C56001AD651 /* NewsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsDetailViewController.swift; sourceTree = "<group>"; };
 		BEB5BECF1CB87659001AD651 /* ConvenientData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvenientData.swift; sourceTree = "<group>"; };
+		BED3E6791CD95759004C24B8 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		BEE788691CB4854400A98F1D /* NewsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -145,6 +147,7 @@
 				BE573E761CBD91FC0031E00C /* DailyMatchViewController.swift */,
 				BE8E6BDC1CC04D9C00B2B397 /* ClosestFansViewController.swift */,
 				BE35A1771CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift */,
+				BED3E6791CD95759004C24B8 /* ChatViewController.swift */,
 				BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */,
 				BE5E327D1CB3888900D8E311 /* ConvenientView.swift */,
 				BEB5BECF1CB87659001AD651 /* ConvenientData.swift */,
@@ -369,6 +372,7 @@
 				BEB5BED01CB87659001AD651 /* ConvenientData.swift in Sources */,
 				BE5E327C1CB3888900D8E311 /* AppDelegate.swift in Sources */,
 				BEB5BECA1CB6EF8D001AD651 /* NewsTableViewCell.swift in Sources */,
+				BED3E67A1CD95759004C24B8 /* ChatViewController.swift in Sources */,
 				BE8E6BDF1CC055FC00B2B397 /* MCManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

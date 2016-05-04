@@ -9,19 +9,20 @@
 import UIKit
 import MultipeerConnectivity
 
-class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MCManagerInvitationDelegate {
+class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MCManagerInvitationDelegate, MCManagerConnectionDelegate {
     @IBOutlet weak var deviceNameTextField: UITextField!
     @IBOutlet weak var visableSwitch: UISwitch!
     @IBOutlet weak var connectedDeviceTableView: UITableView!
     @IBOutlet weak var disconnectButton: UIButton!
     
 //    var mcManager: MCManager!
-    var connectedDevices: NSMutableArray!
+//    var connectedDevices: NSMutableArray!
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        connectedDevices = appDelegate.mcManager.connectedPeers
+        //make sure tableView is always up-to-date when presented to user
+//        connectedDevices = appDelegate.mcManager.connectedPeers
         connectedDeviceTableView.reloadData()
     }
     
@@ -31,7 +32,8 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         connectedDeviceTableView.delegate = self
         connectedDeviceTableView.dataSource = self
         appDelegate.mcManager.invitationDelegate = self
-        connectedDevices = []
+        appDelegate.mcManager.connectionDelegate = self
+//        connectedDevices = []
         
         if  visableSwitch.on {
             appDelegate.mcManager.advertiser.startAdvertisingPeer()
@@ -41,12 +43,12 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return connectedDevices.count
+        return appDelegate.mcManager.connectedPeers.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath)
-        let peerID = connectedDevices[indexPath.row] as! MCPeerID
+        let peerID = (appDelegate.mcManager.connectedPeers)[indexPath.row] as! MCPeerID
         cell.textLabel!.text = peerID.displayName as String
         cell.detailTextLabel!.text = "🏀connected"
         return cell
@@ -56,11 +58,23 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         return 50.0
     }
     
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let peerID = (appDelegate.mcManager.connectedPeers)[indexPath.row]
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        let controller = storyboard?.instantiateViewControllerWithIdentifier("ChatViewController") as! ChatViewController
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
     func invitationWasReceived(fromPeer: String, invitationHandler: (Bool, MCSession?) -> Void) {
         print("received invitatio from: \(fromPeer)")
         let alert = UIAlertController(title: "", message: "\(fromPeer) wants to chat with you.", preferredStyle: UIAlertControllerStyle.Alert)
         let acceptAction: UIAlertAction = UIAlertAction(title: "Accept", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
             invitationHandler(true, self.appDelegate.mcManager.session)
+            dispatch_async(dispatch_get_main_queue()){
+                let browserViewController = self.storyboard?.instantiateViewControllerWithIdentifier("ClosestFansBrowserViewController") as! ClosestFansBrowserViewController
+                browserViewController.searchingPeer = false
+                self.appDelegate.window?.rootViewController?.presentViewController(browserViewController, animated: true, completion: nil)
+            }
         }
         let declineAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) {(alertAction) -> Void in
             invitationHandler(false, nil)
@@ -73,9 +87,17 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         }
     }
     
+    func lostConnection() {
+        print("browser lost connection to a peer, update the table view")
+        dispatch_async(dispatch_get_main_queue()){
+            self.connectedDeviceTableView.reloadData()
+        }
+    }
+    
     @IBAction func browseForDevices(sender: AnyObject) {
         
-        let browserViewController = self.storyboard?.instantiateViewControllerWithIdentifier("ClosestFansBrowserViewController") as! ClosestFansBrowserViewController
+        let browserViewController = storyboard?.instantiateViewControllerWithIdentifier("ClosestFansBrowserViewController") as! ClosestFansBrowserViewController
+        browserViewController.searchingPeer = true
         presentViewController(browserViewController, animated: true, completion: nil)
     }
     
@@ -91,7 +113,7 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     @IBAction func disconnect(sender: AnyObject) {
         appDelegate.mcManager.session.disconnect()
         deviceNameTextField.enabled = true
-        connectedDevices.removeAllObjects()
+        (appDelegate.mcManager.connectedPeers).removeAllObjects()
         connectedDeviceTableView.reloadData()
     }
     

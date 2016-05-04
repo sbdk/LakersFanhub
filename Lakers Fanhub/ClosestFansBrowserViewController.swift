@@ -15,10 +15,11 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
     @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var doneButton: UIBarButtonItem!
     @IBOutlet weak var browserActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var browserViewTopLabel: UILabel!
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var cellDetailText: String!
-    enum detailLabelCase {case connectting, notConnected, failed}
+    var searchingPeer: Bool = true
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -27,6 +28,11 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if searchingPeer{
+            browserViewTopLabel.text = "searching"
+        }else{
+            browserViewTopLabel.text = "connecting"
+        }
         cellDetailText = "Touch to connect"
         browserTableView.delegate = self
         browserTableView.dataSource = self
@@ -81,16 +87,19 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
         browserTableView.reloadData()
     }
     
+    //implemente MCManagerSessionDelegate
     func connectedWithPeer(peerID: MCPeerID) {
         cellDetailText = "🏀 connected"
         print(cellDetailText)
         appDelegate.mcManager.connectedPeers.addObject(peerID)
+//        let controller = storyboard?.instantiateViewControllerWithIdentifier("ChatViewController") as! ChatViewController
+//        self.presentViewController(controller, animated: true, completion: nil)
+//        navigationController!.pushViewController(controller, animated: true)
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func connectingWithPeer() {
-//        cellDetailText = "connecting..."
-//        browserTableView.reloadData()
+
     }
     
     func notConnectedWithPeer(peerID: MCPeerID) {
