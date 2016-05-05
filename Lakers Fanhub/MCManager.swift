@@ -121,6 +121,8 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
     
     func session(session: MCSession, didReceiveData data: NSData, fromPeer peerID: MCPeerID) {
         
+        let dictionary:[String:AnyObject] = ["data": data, "fromPeer": peerID]
+        NSNotificationCenter.defaultCenter().postNotificationName("receivedMCDataNotification", object: dictionary)
     }
     
     func session(session: MCSession, didReceiveStream stream: NSInputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
@@ -135,5 +137,18 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
         browser.delegate = self
         advertiser = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: nil, serviceType: "lakers-fanhub")
         advertiser.delegate = self
+    }
+    
+    func sendData(dictionaryWithData dictionary: [String:String], toPeer targetPeer: MCPeerID) -> Bool {
+        let dataToSend = NSKeyedArchiver.archivedDataWithRootObject(dictionary)
+        let peersArray = NSArray(object: targetPeer)
+        do {
+            try session.sendData(dataToSend, toPeers: peersArray as! [MCPeerID], withMode: MCSessionSendDataMode.Reliable)
+            return true
+        } catch {
+            print("There is a error during sending data")
+            return false
+        }
+        
     }
 }
