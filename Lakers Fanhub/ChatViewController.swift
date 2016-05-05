@@ -14,7 +14,8 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
     @IBOutlet weak var chatTableView: UITableView!
     @IBOutlet weak var messageTextField: UITextField!
     
-    var messagesArray = [Dictionary<String,String>]()
+    var messagesArray = [[String:String]]()
+    var peerID: MCPeerID!
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     
@@ -24,7 +25,10 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         messageTextField.delegate = self
         chatTableView.delegate = self
         chatTableView.dataSource = self
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleMCReceivedDataWithNotification(_:)), name: "receivedMCDataNotification", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
+        
         let endChatButton = UIBarButtonItem(title: "End Chat", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(ChatViewController.endChat(_:)))
         navigationItem.rightBarButtonItem = endChatButton
         
@@ -42,9 +46,9 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("messageCell")! as UITableViewCell
+        cell.detailTextLabel!.text = ""
         
         let currentMessage = messagesArray[indexPath.row] as [String:String]
-        
         if let sender = currentMessage["sender"] {
             var senderLabelText: String
             var senderColor: UIColor
@@ -70,12 +74,14 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
+        //dismiss the keyboard
         textField.resignFirstResponder()
         
+        //first send out this message dictionary to connected peer
         let messageDictionary: [String: String] = ["message": (messageTextField?.text)!]
-        
-        if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: (appDelegate.mcManager.session.connectedPeers[0] as MCPeerID)){
+        if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: peerID){
             
+            //then add this message dictionary to local ChatTableView, with extra user info added into dictionary
             var dictionary: [String: String] = ["sender": "self", "message": (messageTextField?.text)!]
             messagesArray.append(dictionary)
             
@@ -88,19 +94,22 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         return true
     }
     
+    //Custom convenient function
     func updateTableView(){
         chatTableView.reloadData()
         
+        //Check whether the table contentSize is bigger than table creen size, if so, scroll the tableview to most current row
         if chatTableView.contentSize.height > chatTableView.frame.size.height {
             chatTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messagesArray.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
         }
     }
     
+    //this function will be called once the session object received the data and call the notification
     func handleMCReceivedDataWithNotification(notification: NSNotification){
         
         let receivedDataDictionary = notification.object as! [String:AnyObject]
         
-        // "Extract" the data and the source peer from the received dictionary.
+        // Extract the data and the sender's MCPeerID from the received dictionary.
         let data = receivedDataDictionary["data"] as? NSData
         let fromPeer = receivedDataDictionary["fromPeer"] as! MCPeerID
         
@@ -109,8 +118,10 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         
         // Check if there's an entry with the "message" key.
         if let message = dataDictionary["message"] {
+            
             // Make sure that the message is other than "_end_chat_".
-            if message != "_end_chat_"{
+            if message != "chat is ended by the other party"{
+                
                 // Create a new dictionary and set the sender and the received message to it.
                 var messageDictionary: [String: String] = ["sender": fromPeer.displayName, "message": message]
                 
@@ -123,6 +134,7 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
                 }
             }
             else{
+                //in this case, only post the last message
                 var messageDictionary: [String:String] = ["message": message]
                 messagesArray.append(messageDictionary)
                 dispatch_async(dispatch_get_main_queue()){
@@ -134,12 +146,23 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
     
     func endChat(sender: AnyObject){
         print("end chat")
-        let messageDictionary: [String: String] = ["message": "_end_chat_"]
-        if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: appDelegate.mcManager.session.connectedPeers[0] as MCPeerID){
-//            navigationController?.popViewControllerAnimated(true)
-////            self.appDelegate.mcManager.session.disconnect()
-            
+        let messageDictionary: [String: String] = ["message": "chat is ended by the other party"]
+        if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: peerID){
+            navigationController?.popViewControllerAnimated(true)
         }
     }
-
+    
+    func handleLostConnection(notification: NSNotification) {
+        
+        //whenever user lost connection with a peer, we need to check whether it's the current chatting peer, if so, present a alertView and return to previous view
+        if (notification.object) as! MCPeerID == peerID {
+            dispatch_sync(dispatch_get_main_queue()){
+                let alterView = UIAlertController(title: "Lost connection", message: "will return to previous page", preferredStyle: UIAlertControllerStyle.Alert)
+                let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel){(OKAction) -> Void in self.navigationController?.popViewControllerAnimated(true)
+                }
+                alterView.addAction(okAction)
+                self.presentViewController(alterView, animated: true, completion: nil)
+            }
+        }
+    }
 }

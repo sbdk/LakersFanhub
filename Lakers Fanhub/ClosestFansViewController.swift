@@ -9,7 +9,7 @@
 import UIKit
 import MultipeerConnectivity
 
-class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MCManagerInvitationDelegate, MCManagerConnectionDelegate {
+class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MCManagerInvitationDelegate {
     @IBOutlet weak var deviceNameTextField: UITextField!
     @IBOutlet weak var visableSwitch: UISwitch!
     @IBOutlet weak var connectedDeviceTableView: UITableView!
@@ -22,7 +22,6 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         //make sure tableView is always up-to-date when presented to user
-//        connectedDevices = appDelegate.mcManager.connectedPeers
         connectedDeviceTableView.reloadData()
     }
     
@@ -32,8 +31,8 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         connectedDeviceTableView.delegate = self
         connectedDeviceTableView.dataSource = self
         appDelegate.mcManager.invitationDelegate = self
-        appDelegate.mcManager.connectionDelegate = self
-//        connectedDevices = []
+//        appDelegate.mcManager.connectionDelegate = self
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
         
         if  visableSwitch.on {
             appDelegate.mcManager.advertiser.startAdvertisingPeer()
@@ -50,7 +49,7 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         let cell = tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath)
         let peerID = (appDelegate.mcManager.connectedPeers)[indexPath.row] as! MCPeerID
         cell.textLabel!.text = peerID.displayName as String
-        cell.detailTextLabel!.text = "🏀connected"
+        cell.detailTextLabel!.text = "connected 😎"
         return cell
     }
     
@@ -59,9 +58,10 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let peerID = (appDelegate.mcManager.connectedPeers)[indexPath.row]
+        let peerID = (appDelegate.mcManager.connectedPeers)[indexPath.row] as! MCPeerID
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         let controller = storyboard?.instantiateViewControllerWithIdentifier("ChatViewController") as! ChatViewController
+        controller.peerID = peerID
         navigationController?.pushViewController(controller, animated: true)
     }
     
@@ -87,8 +87,7 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         }
     }
     
-    func lostConnection() {
-        print("browser lost connection to a peer, update the table view")
+    func handleLostConnection(notification: NSNotification) {
         dispatch_async(dispatch_get_main_queue()){
             self.connectedDeviceTableView.reloadData()
         }

@@ -52,7 +52,7 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
         cell.textLabel?.text = peerID.displayName
         
         if appDelegate.mcManager.connectedPeers.containsObject(peerID){
-            cell.detailTextLabel?.text = "🏀connected"
+            cell.detailTextLabel?.text = "connected 😎"
         } else {
             cell.detailTextLabel?.text = cellDetailText
         }
@@ -69,9 +69,9 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
         let peerID = appDelegate.mcManager.foundPeers[indexPath.row]
         
         if appDelegate.mcManager.connectedPeers.containsObject(peerID){
-            
+            //do noting if the found peer has already connected
         } else {
-            cell!.detailTextLabel!.text = "connecting..."
+            cell!.detailTextLabel!.text = "request sent...😐"
             appDelegate.mcManager.browser.invitePeer(peerID, toSession: appDelegate.mcManager.session, withContext: nil, timeout: 10)
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -89,24 +89,23 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
     
     //implemente MCManagerSessionDelegate
     func connectedWithPeer(peerID: MCPeerID) {
-        cellDetailText = "🏀 connected"
+        cellDetailText = "connected 😎"
         print(cellDetailText)
-        appDelegate.mcManager.connectedPeers.addObject(peerID)
-//        let controller = storyboard?.instantiateViewControllerWithIdentifier("ChatViewController") as! ChatViewController
-//        self.presentViewController(controller, animated: true, completion: nil)
-//        navigationController!.pushViewController(controller, animated: true)
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func connectingWithPeer() {
-
+        cellDetailText = "connecting...😍"
+        dispatch_async(dispatch_get_main_queue()){
+            self.browserTableView.reloadData()
+        }
     }
     
     func notConnectedWithPeer(peerID: MCPeerID) {
-        print("not connected to session")
-        cellDetailText = "💔connect failed"
-        appDelegate.mcManager.connectedPeers.removeObject(peerID)
-        browserTableView.reloadData()
+        cellDetailText = "connect failed 😭"
+        dispatch_async(dispatch_get_main_queue()){
+            self.browserTableView.reloadData()
+        }
     }
     
     @IBAction func cancelButtonTouched(sender: AnyObject) {

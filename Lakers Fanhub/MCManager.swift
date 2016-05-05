@@ -23,9 +23,9 @@ protocol MCManagerSessionDelegate {
     func notConnectedWithPeer(peerID: MCPeerID)
 }
 
-protocol MCManagerConnectionDelegate {
-    func lostConnection()
-}
+//protocol MCManagerConnectionDelegate {
+//    func lostConnection()
+//}
 
 class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdvertiserDelegate {
     
@@ -41,14 +41,6 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
     var browserDelegate: MCManagerBrowserDelegate?
     var invitationDelegate: MCManagerInvitationDelegate?
     var sessionDelegate: MCManagerSessionDelegate?
-    var connectionDelegate: MCManagerConnectionDelegate?
-    
-//    class func sharedInstance() -> MCManager {
-//        struct Singleton {
-//            static var sharedInstance = MCManager()
-//        }
-//        return Singleton.sharedInstance
-//    }
     
     override init(){
         super.init()
@@ -98,15 +90,19 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
         switch state {
         case MCSessionState.Connected:
             print("Connected to session")
+            connectedPeers.addObject(peerID)
             sessionDelegate?.connectedWithPeer(peerID)
         case MCSessionState.Connecting:
             print("Connecting to session")
             sessionDelegate?.connectingWithPeer()
         default:
             print("Did not connect to session")
+            //remove disconnected peer from connectedPeers Array
+            connectedPeers.removeObject(peerID)
+            
             sessionDelegate?.notConnectedWithPeer(peerID)
-            print("now fire up connectionDelegate")
-            connectionDelegate?.lostConnection()
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("lostConnectionWithPeer", object: peerID)
             
         }   
     }
@@ -121,6 +117,7 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
     
     func session(session: MCSession, didReceiveData data: NSData, fromPeer peerID: MCPeerID) {
         
+        //for every received data, use a dictionary to store received data and sender's MCPeerID
         let dictionary:[String:AnyObject] = ["data": data, "fromPeer": peerID]
         NSNotificationCenter.defaultCenter().postNotificationName("receivedMCDataNotification", object: dictionary)
     }
