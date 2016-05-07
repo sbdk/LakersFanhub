@@ -50,15 +50,25 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.hidden = true
-//        
-//        self.subscribeToKeyboardNotifications()
+        
+        //If there is a messageArray object stored for this peerID, use this stored object to populate tableView
+        if (appDelegate.chatMessagesDict?[peerID.displayName]) != nil{
+            print("use stored messaged array")
+            messagesArray = (appDelegate.chatMessagesDict?[peerID.displayName])! as! [[String:String]]
+        } else {
+            messagesArray = []
+        }
+        
+
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         tabBarController?.tabBar.hidden = false
-//        
-//        self.unsubscribeToKeyboardNotifications()
+        
+        //Whenever this ChatView will disapper, save the current messageArray into memory, using current peerID's displayName as dictionary key.
+        appDelegate.chatMessagesDict?[peerID.displayName] = messagesArray
+
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -115,6 +125,7 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         textField.text = ""
         return true
     }
+    
     
     //Custom convenient function
     func updateTableView(){
