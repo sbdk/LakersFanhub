@@ -17,7 +17,10 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
     var messagesArray = [[String:String]]()
     var peerID: MCPeerID!
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    
+    //keyboard config
+    var tapRecognizer: UITapGestureRecognizer? = nil
+    var keyboardAdjusted = false
+    var lastKeyboardOffset : CGFloat = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +31,11 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleMCReceivedDataWithNotification(_:)), name: "receivedMCDataNotification", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
+        subscribeToKeyboardNotifications()
+        
+        tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ChatViewController.handleSingleTap))
+        tapRecognizer?.numberOfTapsRequired = 1
+        self.view.addGestureRecognizer(tapRecognizer!)
         
         let endChatButton = UIBarButtonItem(title: "End Chat", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(ChatViewController.endChat(_:)))
         navigationItem.rightBarButtonItem = endChatButton
@@ -37,6 +45,20 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         chatTableView.rowHeight = UITableViewAutomaticDimension
 
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.hidden = true
+//        
+//        self.subscribeToKeyboardNotifications()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        tabBarController?.tabBar.hidden = false
+//        
+//        self.unsubscribeToKeyboardNotifications()
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -157,7 +179,7 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         //whenever user lost connection with a peer, we need to check whether it's the current chatting peer, if so, present a alertView and return to previous view
         if (notification.object) as! MCPeerID == peerID {
             dispatch_sync(dispatch_get_main_queue()){
-                let alterView = UIAlertController(title: "Lost connection", message: "will return to previous page", preferredStyle: UIAlertControllerStyle.Alert)
+                let alterView = UIAlertController(title: "Lost connection", message: "will exit chat window", preferredStyle: UIAlertControllerStyle.Alert)
                 let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel){(OKAction) -> Void in self.navigationController?.popViewControllerAnimated(true)
                 }
                 alterView.addAction(okAction)

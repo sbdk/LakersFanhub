@@ -24,6 +24,7 @@
 		BEB5BECE1CB74C56001AD651 /* NewsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BECD1CB74C56001AD651 /* NewsDetailViewController.swift */; };
 		BEB5BED01CB87659001AD651 /* ConvenientData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BECF1CB87659001AD651 /* ConvenientData.swift */; };
 		BED3E67A1CD95759004C24B8 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED3E6791CD95759004C24B8 /* ChatViewController.swift */; };
+		BED7AFE91CDD533D00666E29 /* KeyboardConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED7AFE81CDD533D00666E29 /* KeyboardConfig.swift */; };
 		BEE7886A1CB4854400A98F1D /* NewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE788691CB4854400A98F1D /* NewsTableViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +71,7 @@
 		BEB5BECD1CB74C56001AD651 /* NewsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsDetailViewController.swift; sourceTree = "<group>"; };
 		BEB5BECF1CB87659001AD651 /* ConvenientData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvenientData.swift; sourceTree = "<group>"; };
 		BED3E6791CD95759004C24B8 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		BED7AFE81CDD533D00666E29 /* KeyboardConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardConfig.swift; sourceTree = "<group>"; };
 		BEE788691CB4854400A98F1D /* NewsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -157,6 +159,7 @@
 				BE5E32871CB3888900D8E311 /* Info.plist */,
 				BEB5BEC71CB56824001AD651 /* XMLParser.swift */,
 				BE8E6BDE1CC055FC00B2B397 /* MCManager.swift */,
+				BED7AFE81CDD533D00666E29 /* KeyboardConfig.swift */,
 			);
 			path = "Lakers Fanhub";
 			sourceTree = "<group>";
@@ -368,6 +371,7 @@
 				BE8E6BDD1CC04D9C00B2B397 /* ClosestFansViewController.swift in Sources */,
 				BEE7886A1CB4854400A98F1D /* NewsTableViewController.swift in Sources */,
 				BE573E771CBD91FC0031E00C /* DailyMatchViewController.swift in Sources */,
+				BED7AFE91CDD533D00666E29 /* KeyboardConfig.swift in Sources */,
 				BE5E327E1CB3888900D8E311 /* ConvenientView.swift in Sources */,
 				BEB5BED01CB87659001AD651 /* ConvenientData.swift in Sources */,
 				BE5E327C1CB3888900D8E311 /* AppDelegate.swift in Sources */,

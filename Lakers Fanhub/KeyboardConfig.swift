@@ -1,0 +1,73 @@
+//
+//  KeyboardConfig.swift
+//  Lakers Fanhub
+//
+//  Created by Li Yin on 5/6/16.
+//  Copyright © 2016 Li Yin. All rights reserved.
+//
+
+import Foundation
+import UIKit
+
+extension ChatViewController {
+    
+    func subscribeToKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.keyboardWillHide(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
+    }
+    
+    func unsubscribeToKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+    }
+    
+    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+    
+//    func adjustViewForKeyboard(notification: NSNotification){
+//        
+//        switch notification.name {
+//            case UIKeyboardWillShowNotification:
+//                print("nice")
+//            
+//            case UIKeyboardWillHideNotification:
+//                print("good")
+//            case UIKeyboardWillChangeFrameNotification:
+//            print("go")
+//            default: break
+//        }
+//    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        
+        if keyboardAdjusted == false {
+            lastKeyboardOffset = getKeyboardHeight(notification)
+            self.view.superview?.frame.origin.y -= lastKeyboardOffset
+            keyboardAdjusted = true
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        
+        if keyboardAdjusted == true {
+            self.view.superview?.frame.origin.y += lastKeyboardOffset
+            keyboardAdjusted = false
+        }
+    }
+    
+    func getKeyboardHeight(notification: NSNotification) -> CGFloat {
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+        return keyboardSize.CGRectValue().height
+    }
+    
+    func prepareTextField(textField: UITextField){
+        textField.delegate = self
+    }
+    
+    func textFieldDidBeginEditing(textField: UITextField) {
+        
+        textField.clearsOnBeginEditing = false
+    }
+}

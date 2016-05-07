@@ -15,8 +15,6 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     @IBOutlet weak var connectedDeviceTableView: UITableView!
     @IBOutlet weak var disconnectButton: UIButton!
     
-//    var mcManager: MCManager!
-//    var connectedDevices: NSMutableArray!
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     override func viewWillAppear(animated: Bool) {
@@ -31,7 +29,7 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         connectedDeviceTableView.delegate = self
         connectedDeviceTableView.dataSource = self
         appDelegate.mcManager.invitationDelegate = self
-//        appDelegate.mcManager.connectionDelegate = self
+
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
         
         if  visableSwitch.on {
@@ -65,6 +63,19 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         navigationController?.pushViewController(controller, animated: true)
     }
     
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        switch (editingStyle) {
+        case .Delete:
+            let connectedPeerToRemove = appDelegate.mcManager.connectedPeers[indexPath.row] as! MCPeerID
+            appDelegate.mcManager.session.cancelConnectPeer(connectedPeerToRemove)
+//            deviceNameTextField.enabled = true
+//            (appDelegate.mcManager.connectedPeers).removeAllObjects()
+//            connectedDeviceTableView.reloadData()
+        default:
+            break
+        }
+    }
+    
     func invitationWasReceived(fromPeer: String, invitationHandler: (Bool, MCSession?) -> Void) {
         print("received invitatio from: \(fromPeer)")
         let alert = UIAlertController(title: "", message: "\(fromPeer) wants to chat with you.", preferredStyle: UIAlertControllerStyle.Alert)
@@ -72,12 +83,14 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
             invitationHandler(true, self.appDelegate.mcManager.session)
             dispatch_async(dispatch_get_main_queue()){
                 let browserViewController = self.storyboard?.instantiateViewControllerWithIdentifier("ClosestFansBrowserViewController") as! ClosestFansBrowserViewController
+                
+                //indicate that browserView is used for handling invitation from other peer
                 browserViewController.searchingPeer = false
                 self.appDelegate.window?.rootViewController?.presentViewController(browserViewController, animated: true, completion: nil)
             }
         }
         let declineAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) {(alertAction) -> Void in
-            invitationHandler(false, nil)
+            invitationHandler(false, self.appDelegate.mcManager.session)
         }
         alert.addAction(declineAction)
         alert.addAction(acceptAction)
@@ -96,6 +109,8 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     @IBAction func browseForDevices(sender: AnyObject) {
         
         let browserViewController = storyboard?.instantiateViewControllerWithIdentifier("ClosestFansBrowserViewController") as! ClosestFansBrowserViewController
+        
+        //indicate that browserView is used for searching other peer
         browserViewController.searchingPeer = true
         presentViewController(browserViewController, animated: true, completion: nil)
     }
