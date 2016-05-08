@@ -26,6 +26,7 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         super.viewDidLoad()
         
         messageTextField.delegate = self
+        messageTextField.returnKeyType = UIReturnKeyType.Send
         chatTableView.delegate = self
         chatTableView.dataSource = self
         
@@ -58,17 +59,11 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         } else {
             messagesArray = []
         }
-        
-
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         tabBarController?.tabBar.hidden = false
-        
-        //Whenever this ChatView will disapper, save the current messageArray into memory, using current peerID's displayName as dictionary key.
-        appDelegate.chatMessagesDict?[peerID.displayName] = messagesArray
-
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -107,7 +102,7 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         //dismiss the keyboard
-        textField.resignFirstResponder()
+//        textField.resignFirstResponder()
         
         //first send out this message dictionary to connected peer
         let messageDictionary: [String: String] = ["message": (messageTextField?.text)!]
@@ -129,6 +124,8 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
     
     //Custom convenient function
     func updateTableView(){
+        //whenever chatView has new message to be displayed, save the current messageArray into memory, using current peerID's displayName as dictionary key.
+        appDelegate.chatMessagesDict?[peerID.displayName] = messagesArray
         chatTableView.reloadData()
         
         //Check whether the table contentSize is bigger than table creen size, if so, scroll the tableview to most current row
@@ -140,6 +137,7 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
     //this function will be called once the session object received the data and call the notification
     func handleMCReceivedDataWithNotification(notification: NSNotification){
         
+        print("received a message from other party")
         let receivedDataDictionary = notification.object as! [String:AnyObject]
         
         // Extract the data and the sender's MCPeerID from the received dictionary.
@@ -181,7 +179,10 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         print("end chat")
         let messageDictionary: [String: String] = ["message": "chat is ended by the other party"]
         if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: peerID){
-            navigationController?.popViewControllerAnimated(true)
+            
+            appDelegate.chatMessagesDict.removeValueForKey(peerID.displayName)
+            appDelegate.mcManager.session.cancelConnectPeer(peerID)
+//            navigationController?.popViewControllerAnimated(true)
         }
     }
     
@@ -197,5 +198,9 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
                 self.presentViewController(alterView, animated: true, completion: nil)
             }
         }
+    }
+    
+    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+        self.view.endEditing(true)
     }
 }

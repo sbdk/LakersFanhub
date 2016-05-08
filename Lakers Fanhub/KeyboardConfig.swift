@@ -16,27 +16,9 @@ extension ChatViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.keyboardWillHide(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
-    
-    func unsubscribeToKeyboardNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
-    }
-    
-    func handleSingleTap(recognizer: UITapGestureRecognizer) {
-        self.view.endEditing(true)
-    }
-    
-//    func adjustViewForKeyboard(notification: NSNotification){
-//        
-//        switch notification.name {
-//            case UIKeyboardWillShowNotification:
-//                print("nice")
-//            
-//            case UIKeyboardWillHideNotification:
-//                print("good")
-//            case UIKeyboardWillChangeFrameNotification:
-//            print("go")
-//            default: break
-//        }
+//    
+//    func unsubscribeToKeyboardNotifications() {
+//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
 //    }
     
     func keyboardWillShow(notification: NSNotification) {
@@ -62,12 +44,12 @@ extension ChatViewController {
         return keyboardSize.CGRectValue().height
     }
     
-    func prepareTextField(textField: UITextField){
-        textField.delegate = self
-    }
-    
-    func textFieldDidBeginEditing(textField: UITextField) {
-        
-        textField.clearsOnBeginEditing = false
-    }
+//    func prepareTextField(textField: UITextField){
+//        textField.delegate = self
+//    }
+//    
+//    func textFieldDidBeginEditing(textField: UITextField) {
+//        
+//        textField.clearsOnBeginEditing = false
+//    }
 }
