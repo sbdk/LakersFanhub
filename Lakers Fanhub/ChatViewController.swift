@@ -9,10 +9,10 @@
 import UIKit
 import MultipeerConnectivity
 
-class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var chatTableView: UITableView!
-    @IBOutlet weak var messageTextField: UITextField!
+    @IBOutlet weak var messageInputTextView: UITextView!
     
     var messagesArray = [[String:String]]()
     var peerID: MCPeerID!
@@ -25,10 +25,15 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        messageTextField.delegate = self
-        messageTextField.returnKeyType = UIReturnKeyType.Send
+        messageInputTextView.delegate = self
+        messageInputTextView.returnKeyType = UIReturnKeyType.Send
+        messageInputTextView.enablesReturnKeyAutomatically = true
+        messageInputTextView.layer.cornerRadius = 10.0
+        messageInputTextView.layer.borderColor = UIColor.grayColor().CGColor
+        messageInputTextView.layer.borderWidth = 1.0
         chatTableView.delegate = self
         chatTableView.dataSource = self
+        chatTableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleMCReceivedDataWithNotification(_:)), name: "receivedMCDataNotification", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
@@ -42,8 +47,8 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         navigationItem.rightBarButtonItem = endChatButton
         
         //auto adjust table row height
-        chatTableView.estimatedRowHeight = 60.0
         chatTableView.rowHeight = UITableViewAutomaticDimension
+        chatTableView.estimatedRowHeight = 50.0
 
         // Do any additional setup after loading the view.
     }
@@ -71,54 +76,75 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCellWithIdentifier("messageCell")! as UITableViewCell
-        cell.detailTextLabel!.text = ""
-        
         let currentMessage = messagesArray[indexPath.row] as [String:String]
+        let messageBody = currentMessage["message"] ?? ""
+        let messageViewMaxWidth: CGFloat = 240.0
+        
         if let sender = currentMessage["sender"] {
-            var senderLabelText: String
-            var senderColor: UIColor
-            
             if sender == "self"{
-                senderLabelText = "I said:"
-                senderColor = UIColor.purpleColor()
+                //implemente outgoing message
+                let cell = tableView.dequeueReusableCellWithIdentifier("sentMessageCell")! as! ChatMessageTableCell
+                cell.sentMessageView.text = messageBody
+                cell.sentMessageView.backgroundColor = UIColor.purpleColor()
+                cell.sentMessageView.textColor = UIColor.whiteColor()
+                cell.sentMessageView.layer.cornerRadius = 10.0
+                if cell.sentMessageView.attributedText.size().width < messageViewMaxWidth {
+                    cell.sentMessageViewWidth.constant = cell.sentMessageView.attributedText.size().width + 10
+                } else {
+                    cell.sentMessageViewWidth.constant = 240.0
+                }
+                return cell
+                
+            } else {
+                //implemente incoming message
+                let cell = tableView.dequeueReusableCellWithIdentifier("receivedMessageCell")! as! ChatMessageTableCell
+                cell.receivedMessageView.backgroundColor = UIColor(red: 230/255.0, green: 230/255.0, blue: 230/255.0, alpha: 1.0)
+                cell.receivedMessageView.textColor = UIColor.blackColor()
+                cell.receivedMessageView.layer.cornerRadius = 10.0
+                cell.receivedMessageView.text = messageBody
+                if cell.receivedMessageView.attributedText.size().width < messageViewMaxWidth {
+                    cell.receivedMessageViewWidth.constant = cell.receivedMessageView.attributedText.size().width + 10
+                } else {
+                    cell.receivedMessageViewWidth.constant = 240.0
+                }
+                return cell
             }
-            else{
-                senderLabelText = sender + " said:"
-                senderColor = UIColor.orangeColor()
-            }
-            
-            cell.detailTextLabel?.text = senderLabelText
-            cell.detailTextLabel?.textColor = senderColor
+        } else {
+            //implemente end-of-chat message
+            let cell = tableView.dequeueReusableCellWithIdentifier("receivedMessageCell")! as! ChatMessageTableCell
+            cell.receivedMessageView.backgroundColor = UIColor.whiteColor()
+            cell.receivedMessageView.textColor = UIColor.lightGrayColor()
+            cell.receivedMessageView.layer.cornerRadius = 10.0
+            cell.receivedMessageView.text = messageBody
+            cell.receivedMessageViewWidth.constant = 240.0
+            return cell
         }
-        
-        if let message = currentMessage["message"] {
-            cell.textLabel?.text = message
-        }
-        
-        return cell
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        //dismiss the keyboard
-//        textField.resignFirstResponder()
-        
-        //first send out this message dictionary to connected peer
-        let messageDictionary: [String: String] = ["message": (messageTextField?.text)!]
-        if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: peerID){
-            
-            //then add this message dictionary to local ChatTableView, with extra user info added into dictionary
-            var dictionary: [String: String] = ["sender": "self", "message": (messageTextField?.text)!]
-            messagesArray.append(dictionary)
-            
-            self.updateTableView()
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n"{
+            //first send out this message dictionary to connected peer
+            let messageDictionary: [String: String] = ["message": (messageInputTextView?.text)!]
+            if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: peerID){
+                
+                //then add this message dictionary to local ChatTableView, with extra user info added into dictionary
+                let dictionary: [String: String] = ["sender": "self", "message": (messageInputTextView?.text)!]
+                messagesArray.append(dictionary)
+                
+                self.updateTableView()
+            }
+            else{
+                print("Could not send data")
+            }
+            messageInputTextView.text = ""
+            messageInputTextView.resignFirstResponder()
         }
-        else{
-            print("Could not send data")
-        }
-        textField.text = ""
         return true
+    }
+    
+    func textViewDidChange(textView: UITextView) {
+//        
+//        textView.sizeToFit()
     }
     
     
@@ -179,10 +205,8 @@ class ChatViewController: UIViewController, UITextFieldDelegate, UITableViewDele
         print("end chat")
         let messageDictionary: [String: String] = ["message": "chat is ended by the other party"]
         if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: peerID){
-            
             appDelegate.chatMessagesDict.removeValueForKey(peerID.displayName)
             appDelegate.mcManager.session.cancelConnectPeer(peerID)
-//            navigationController?.popViewControllerAnimated(true)
         }
     }
     

@@ -97,13 +97,9 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
             sessionDelegate?.connectingWithPeer()
         default:
             print("Did not connect to session")
-            //remove disconnected peer from connectedPeers Array
             connectedPeers.removeObject(peerID)
-            
             sessionDelegate?.notConnectedWithPeer(peerID)
-            
             NSNotificationCenter.defaultCenter().postNotificationName("lostConnectionWithPeer", object: peerID)
-            
         }   
     }
     

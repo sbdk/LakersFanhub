@@ -17,6 +17,7 @@
 		BE5E32861CB3888900D8E311 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE5E32841CB3888900D8E311 /* LaunchScreen.storyboard */; };
 		BE5E32911CB3888900D8E311 /* Lakers_FanhubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5E32901CB3888900D8E311 /* Lakers_FanhubTests.swift */; };
 		BE5E329C1CB3888900D8E311 /* Lakers_FanhubUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5E329B1CB3888900D8E311 /* Lakers_FanhubUITests.swift */; };
+		BE83FBD61CE2AAA600C80CB1 /* ChatMessageTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE83FBD51CE2AAA600C80CB1 /* ChatMessageTableCell.swift */; };
 		BE8E6BDD1CC04D9C00B2B397 /* ClosestFansViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E6BDC1CC04D9C00B2B397 /* ClosestFansViewController.swift */; };
 		BE8E6BDF1CC055FC00B2B397 /* MCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E6BDE1CC055FC00B2B397 /* MCManager.swift */; };
 		BEB5BEC81CB56824001AD651 /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BEC71CB56824001AD651 /* XMLParser.swift */; };
@@ -64,6 +65,7 @@
 		BE5E32971CB3888900D8E311 /* Lakers FanhubUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Lakers FanhubUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE5E329B1CB3888900D8E311 /* Lakers_FanhubUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lakers_FanhubUITests.swift; sourceTree = "<group>"; };
 		BE5E329D1CB3888900D8E311 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BE83FBD51CE2AAA600C80CB1 /* ChatMessageTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessageTableCell.swift; sourceTree = "<group>"; };
 		BE8E6BDC1CC04D9C00B2B397 /* ClosestFansViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosestFansViewController.swift; sourceTree = "<group>"; };
 		BE8E6BDE1CC055FC00B2B397 /* MCManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MCManager.swift; sourceTree = "<group>"; };
 		BEB5BEC71CB56824001AD651 /* XMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParser.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				BE8E6BDC1CC04D9C00B2B397 /* ClosestFansViewController.swift */,
 				BE35A1771CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift */,
 				BED3E6791CD95759004C24B8 /* ChatViewController.swift */,
+				BE83FBD51CE2AAA600C80CB1 /* ChatMessageTableCell.swift */,
 				BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */,
 				BE5E327D1CB3888900D8E311 /* ConvenientView.swift */,
 				BEB5BECF1CB87659001AD651 /* ConvenientData.swift */,
@@ -367,6 +370,7 @@
 			files = (
 				BEB5BECE1CB74C56001AD651 /* NewsDetailViewController.swift in Sources */,
 				BE35A1781CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift in Sources */,
+				BE83FBD61CE2AAA600C80CB1 /* ChatMessageTableCell.swift in Sources */,
 				BEB5BEC81CB56824001AD651 /* XMLParser.swift in Sources */,
 				BE8E6BDD1CC04D9C00B2B397 /* ClosestFansViewController.swift in Sources */,
 				BEE7886A1CB4854400A98F1D /* NewsTableViewController.swift in Sources */,

@@ -67,9 +67,14 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         switch (editingStyle) {
         case .Delete:
+            tableView.beginUpdates()
             let connectedPeerToRemove = appDelegate.mcManager.connectedPeers[indexPath.row] as! MCPeerID
+//            appDelegate.mcManager.connectedPeers.removeObject(connectedPeerToRemove)
+//            connectedDeviceTableView.reloadData()
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            tableView.endUpdates()
             appDelegate.mcManager.session.cancelConnectPeer(connectedPeerToRemove)
-            connectedDeviceTableView.reloadData()
+            appDelegate.chatMessagesDict.removeValueForKey(connectedPeerToRemove.displayName)
         default:
             break
         }
@@ -100,11 +105,6 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     }
     
     func handleLostConnection(notification: NSNotification) {
-        //Whenever a peer lost, clear its messagesArray stored in AppDelegate
-        let lostPeer = (notification.object) as! MCPeerID
-        appDelegate.chatMessagesDict.removeValueForKey(lostPeer.displayName)
-        print("clear memeory for lost peer's messageArray")
-        
         dispatch_async(dispatch_get_main_queue()){
             self.connectedDeviceTableView.reloadData()
         }
@@ -131,7 +131,10 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     @IBAction func disconnect(sender: AnyObject) {
         appDelegate.mcManager.session.disconnect()
         deviceNameTextField.enabled = true
-        (appDelegate.mcManager.connectedPeers).removeAllObjects()
+        appDelegate.mcManager.connectedPeers.removeAllObjects()
+        
+        //After disconnect all peers, also clear the chat history
+        appDelegate.chatMessagesDict.removeAll()
         connectedDeviceTableView.reloadData()
     }
     
