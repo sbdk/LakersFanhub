@@ -30,6 +30,10 @@ class ConvenientView: NSObject {
         label.textColor = color
     }
     
+    func setRoundButton(button: UIButton){
+        button.layer.cornerRadius = button.bounds.size.width * 0.5
+    }
+    
     func setDarkNaviBar(rootViewController: UIViewController){
         let naviBar = rootViewController.navigationController?.navigationBar
         naviBar!.barTintColor = ConvenientData().lakersPurpleColor

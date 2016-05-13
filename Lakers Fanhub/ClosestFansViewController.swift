@@ -14,6 +14,7 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     @IBOutlet weak var visableSwitch: UISwitch!
     @IBOutlet weak var connectedDeviceTableView: UITableView!
     @IBOutlet weak var disconnectButton: UIButton!
+    @IBOutlet weak var browserButton: UIButton!
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
@@ -21,6 +22,11 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         super.viewWillAppear(animated)
         //make sure tableView is always up-to-date when presented to user
         connectedDeviceTableView.reloadData()
+        
+        //If there is still peer connected, user can't change device name
+        if self.appDelegate.mcManager.connectedPeers.count > 0 {
+            self.deviceNameTextField.enabled = false
+        }
     }
     
     override func viewDidLoad() {
@@ -29,14 +35,19 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         connectedDeviceTableView.delegate = self
         connectedDeviceTableView.dataSource = self
         appDelegate.mcManager.invitationDelegate = self
-
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.handleMCReceivedDataWithNotification(_:)), name: "receivedMCDataNotification", object: nil)
         
-        if  visableSwitch.on {
-            appDelegate.mcManager.advertiser.startAdvertisingPeer()
-        } else {
-            appDelegate.mcManager.advertiser.stopAdvertisingPeer()
+        browserButton.layer.cornerRadius = 30.0
+        disconnectButton.layer.cornerRadius = 30.0
+        
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)){
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.handleMCReceivedDataWithNotification(_:)), name: "receivedMCDataNotification", object: nil)
+            if  self.visableSwitch.on {
+                self.appDelegate.mcManager.advertiser.startAdvertisingPeer()
+            } else {
+                self.appDelegate.mcManager.advertiser.stopAdvertisingPeer()
+            }
         }
     }
     
@@ -67,12 +78,7 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         switch (editingStyle) {
         case .Delete:
-            tableView.beginUpdates()
             let connectedPeerToRemove = appDelegate.mcManager.connectedPeers[indexPath.row] as! MCPeerID
-//            appDelegate.mcManager.connectedPeers.removeObject(connectedPeerToRemove)
-//            connectedDeviceTableView.reloadData()
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
-            tableView.endUpdates()
             appDelegate.mcManager.session.cancelConnectPeer(connectedPeerToRemove)
             appDelegate.chatMessagesDict.removeValueForKey(connectedPeerToRemove.displayName)
         default:
@@ -80,38 +86,7 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         }
     }
     
-    func invitationWasReceived(fromPeer: String, invitationHandler: (Bool, MCSession?) -> Void) {
-        print("received invitatio from: \(fromPeer)")
-        let alert = UIAlertController(title: "", message: "\(fromPeer) wants to chat with you.", preferredStyle: UIAlertControllerStyle.Alert)
-        let acceptAction: UIAlertAction = UIAlertAction(title: "Accept", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
-            invitationHandler(true, self.appDelegate.mcManager.session)
-            dispatch_async(dispatch_get_main_queue()){
-                let browserViewController = self.storyboard?.instantiateViewControllerWithIdentifier("ClosestFansBrowserViewController") as! ClosestFansBrowserViewController
-                
-                //indicate that browserView is used for handling invitation from other peer
-                browserViewController.searchingPeer = false
-                self.appDelegate.window?.rootViewController?.presentViewController(browserViewController, animated: true, completion: nil)
-            }
-        }
-        let declineAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) {(alertAction) -> Void in
-            invitationHandler(false, self.appDelegate.mcManager.session)
-        }
-        alert.addAction(declineAction)
-        alert.addAction(acceptAction)
-        
-        dispatch_async(dispatch_get_main_queue()){
-            self.appDelegate.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
-        }
-    }
-    
-    func handleLostConnection(notification: NSNotification) {
-        dispatch_async(dispatch_get_main_queue()){
-            self.connectedDeviceTableView.reloadData()
-        }
-    }
-    
     @IBAction func browseForDevices(sender: AnyObject) {
-        
         let browserViewController = storyboard?.instantiateViewControllerWithIdentifier("ClosestFansBrowserViewController") as! ClosestFansBrowserViewController
         
         //indicate that browserView is used for searching other peer
@@ -138,10 +113,51 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         connectedDeviceTableView.reloadData()
     }
     
+    //Implemente invitation delegate
+    func invitationWasReceived(fromPeer: String, invitationHandler: (Bool, MCSession?) -> Void) {
+        print("received invitatio from: \(fromPeer)")
+        
+        //Config the invitation AlertView
+        let alert = UIAlertController(title: "", message: "\(fromPeer) wants to chat with you.", preferredStyle: UIAlertControllerStyle.Alert)
+        let acceptAction: UIAlertAction = UIAlertAction(title: "Accept", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
+            invitationHandler(true, self.appDelegate.mcManager.session)
+            
+            //if user tap accept button, present a Custom BroserView to show connection status
+            dispatch_async(dispatch_get_main_queue()){
+                let browserViewController = self.storyboard?.instantiateViewControllerWithIdentifier("ClosestFansBrowserViewController") as! ClosestFansBrowserViewController
+                
+                //indicate that browserView is used for handling invitation from other peer
+                browserViewController.searchingPeer = false
+                self.appDelegate.window?.rootViewController?.presentViewController(browserViewController, animated: true, completion: nil)
+            }
+        }
+        let declineAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) {(alertAction) -> Void in
+            invitationHandler(false, self.appDelegate.mcManager.session)
+        }
+        alert.addAction(declineAction)
+        alert.addAction(acceptAction)
+        
+        //Present the invitation Alter view
+        dispatch_async(dispatch_get_main_queue()){
+            self.appDelegate.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+        }
+    }
+    
+    //Help function used for lostConnection notification
+    func handleLostConnection(notification: NSNotification) {
+        dispatch_async(dispatch_get_main_queue()){
+            self.connectedDeviceTableView.reloadData()
+            
+            //When all peers lost connection, re-enable the deviceNameTextField
+            if self.appDelegate.mcManager.connectedPeers.count == 0 {
+                self.deviceNameTextField.enabled = true
+            }
+        }
+    }
+    
     //this function will be called once the session object received the data and call the notification
     func handleMCReceivedDataWithNotification(notification: NSNotification){
         
-        print("received a message from other party")
         let receivedDataDictionary = notification.object as! [String:AnyObject]
         
         // Extract the data and the sender's MCPeerID from the received dictionary.
@@ -171,35 +187,43 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         }
     }
     
+    //Help function used to store incoming message into dictionary
     func storeIncomingMessages(fromPeer: MCPeerID, messageDictionary: [String:String]){
+        var tempMessagesArray = [[String:String]]()
         if appDelegate.chatMessagesDict[fromPeer.displayName] != nil{
-            
             //If user already have chat history with this peer, fetch the stored chat messages array to store newly recieved message
-            var tempMessagesArray = (appDelegate.chatMessagesDict?[fromPeer.displayName])! as! [[String:String]]
+            tempMessagesArray = (appDelegate.chatMessagesDict?[fromPeer.displayName])! as! [[String:String]]
             tempMessagesArray.append(messageDictionary)
-            
-            //After the messagesArray updated, also update the chatMessages dictionary in AppDelegate
-            appDelegate.chatMessagesDict[fromPeer.displayName] = tempMessagesArray
         } else {
             //If it's the first message that user received from connected peer, creat a empty messages array to store this message
-            var emptyMessagesArray = [[String:String]]()
-            emptyMessagesArray.append(messageDictionary)
-            appDelegate.chatMessagesDict[fromPeer.displayName] = emptyMessagesArray
+            tempMessagesArray.append(messageDictionary)
         }
-
+        //After the messagesArray updated, update the chatMessages dictionary in AppDelegate
+        appDelegate.chatMessagesDict[fromPeer.displayName] = tempMessagesArray
     }
 
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
+        var resetDeviceName: String!
+        //If user tap the textField but don't input anything, use default device name
+        if deviceNameTextField.text! == "" {
+           resetDeviceName = UIDevice.currentDevice().name
+        } else {
+            resetDeviceName = deviceNameTextField.text!
+        }
         deviceNameTextField.resignFirstResponder()
-        appDelegate.mcManager.peerID = nil
-        appDelegate.mcManager.session = nil
-        
+        //If advertiser is on, first stop it and then reset it
         if visableSwitch.on {
             appDelegate.mcManager.advertiser.stopAdvertisingPeer()
         }
         appDelegate.mcManager.advertiser = nil
-        appDelegate.mcManager.setupPeerAndSessionWithDisplayName(deviceNameTextField.text!)
+        
+        //Upon return, reset peerID and session using user provided device name
+        appDelegate.mcManager.peerID = nil
+        appDelegate.mcManager.session = nil
+        appDelegate.mcManager.setupPeerAndSessionWithDisplayName(resetDeviceName)
+        
+        //After reset is done, resume advertiser if it's switch is on
         if visableSwitch.on {
             appDelegate.mcManager.advertiser.startAdvertisingPeer()
         }

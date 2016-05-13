@@ -16,10 +16,6 @@ extension ChatViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.keyboardWillHide(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
-//    
-//    func unsubscribeToKeyboardNotifications() {
-//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
-//    }
     
     func keyboardWillShow(notification: NSNotification) {
         
@@ -43,13 +39,4 @@ extension ChatViewController {
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
         return keyboardSize.CGRectValue().height
     }
-    
-//    func prepareTextField(textField: UITextField){
-//        textField.delegate = self
-//    }
-//    
-//    func textFieldDidBeginEditing(textField: UITextField) {
-//        
-//        textField.clearsOnBeginEditing = false
-//    }
 }
