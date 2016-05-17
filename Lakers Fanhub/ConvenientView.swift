@@ -38,6 +38,7 @@ class ConvenientView: NSObject {
         let naviBar = rootViewController.navigationController?.navigationBar
         naviBar!.barTintColor = ConvenientData().lakersPurpleColor
         naviBar!.titleTextAttributes = [NSForegroundColorAttributeName: ConvenientData().lakersGoldColor]
+        naviBar!.tintColor = ConvenientData().lakersGoldColor
         naviBar!.barStyle = UIBarStyle.Black
         naviBar!.translucent = false
     }
@@ -46,8 +47,19 @@ class ConvenientView: NSObject {
         let naviBar = rootViewController.navigationController?.navigationBar
         naviBar!.barTintColor = UIColor.whiteColor()
         naviBar!.titleTextAttributes = [NSForegroundColorAttributeName: ConvenientData().lakersPurpleColor]
+        naviBar!.tintColor = ConvenientData().lakersPurpleColor
         naviBar!.barStyle = UIBarStyle.Default
         naviBar!.translucent = false
+    }
+    
+    func enhanceItemUI(button: AnyObject, cornerRadius: CGFloat){
+        
+        button.layer.shadowColor = UIColor.blackColor().CGColor
+        button.layer.shadowOpacity = 0.3
+        button.layer.shadowRadius = 3
+        button.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        button.layer.cornerRadius = cornerRadius
+        
     }
 }
 

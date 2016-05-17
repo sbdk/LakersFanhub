@@ -23,27 +23,28 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        chatTableView.delegate = self
-        chatTableView.dataSource = self
-        chatTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        //auto adjust table row height
-        chatTableView.rowHeight = UITableViewAutomaticDimension
-        chatTableView.estimatedRowHeight = 50.0
-        
-        messageInputTextView.delegate = self
-        messageInputTextView.returnKeyType = UIReturnKeyType.Send
-        messageInputTextView.enablesReturnKeyAutomatically = true
+        ConvenientView.sharedInstance().setLightNaviBar(self)
         messageInputTextView.layer.cornerRadius = 8.0
         messageInputTextView.layer.borderColor = UIColor.whiteColor().CGColor
         messageInputTextView.layer.borderWidth = 1
         
-        let endChatButton = UIBarButtonItem(title: "End Chat", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(ChatViewController.endChat(_:)))
-        navigationItem.rightBarButtonItem = endChatButton
-        navigationController?.navigationBar.tintColor = ConvenientData().lakersPurpleColor
+        chatTableView.delegate = self
+        chatTableView.dataSource = self
+        chatTableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        chatTableView.rowHeight = UITableViewAutomaticDimension
+        chatTableView.estimatedRowHeight = 50.0
+        
+        let cutButton = UIBarButtonItem(image: UIImage(named: "NoChat"), style: .Plain, target: self, action: #selector(ChatViewController.endChat(_:)))
+        navigationItem.rightBarButtonItem = cutButton
         
         //Put not-so-urgent code into background queue to improve ChatViewContoller load speed
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)){
             self.subscribeToKeyboardNotifications()
+            
+            //auto adjust table row height
+            self.messageInputTextView.delegate = self
+            self.messageInputTextView.returnKeyType = UIReturnKeyType.Send
+            self.messageInputTextView.enablesReturnKeyAutomatically = true
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleMCReceivedDataWithNotification(_:)), name: "receivedMCDataNotification", object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
@@ -57,11 +58,21 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.hidden = true
+//        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName:ConvenientData().lakersPurpleColor]
+        navigationItem.title = peerID.displayName
 //      If there is a messageArray object stored for this peerID, use this stored object to populate tableView
         if (appDelegate.chatMessagesDict?[peerID.displayName]) != nil{
             messagesArray = (appDelegate.chatMessagesDict?[peerID.displayName])! as! [[String:String]]
         } else {
             messagesArray = []
+        }
+        
+        if messagesArray.count > 0 {
+            let delay = 0.1 * Double(NSEC_PER_SEC)
+            let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
+            dispatch_after(time, dispatch_get_main_queue()){
+                self.chatTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: self.messagesArray.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
+            }
         }
     }
     
@@ -129,21 +140,20 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
                 //then add this message dictionary to local ChatTableView, with extra user info added into dictionary
                 let dictionary: [String: String] = ["sender": "self", "message": (messageInputTextView?.text)!]
                 messagesArray.append(dictionary)
-                
                 self.updateTableView()
             }
             else{
                 print("Could not send data")
             }
             messageInputTextView.text = ""
-            messageInputTextView.resignFirstResponder()
         }
         return true
     }
     
     func textViewDidChange(textView: UITextView) {
-//        
-//        textView.sizeToFit()
+        if messageInputTextView.text == "\n"{
+            messageInputTextView.text = ""
+        }
     }
     
     
@@ -152,11 +162,11 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
         //whenever chatView has new message to be displayed, save the current messageArray into memory, using current peerID's displayName as dictionary key.
         appDelegate.chatMessagesDict?[peerID.displayName] = messagesArray
         chatTableView.reloadData()
-        
+        chatTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messagesArray.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
         //Check whether the table contentSize is bigger than table creen size, if so, scroll the tableview to most current row
-        if chatTableView.contentSize.height > chatTableView.frame.size.height {
-            chatTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messagesArray.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
-        }
+//        if chatTableView.contentSize.height > chatTableView.frame.size.height {
+//            chatTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messagesArray.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
+//        }
     }
     
     //this function will be called once the session object received the data and call the notification
@@ -178,7 +188,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
             if message != "chat is ended by the other party"{
                 
                 // Create a new dictionary and set the sender and the received message to it.
-                var messageDictionary: [String: String] = ["sender": fromPeer.displayName, "message": message]
+                let messageDictionary: [String: String] = ["sender": fromPeer.displayName, "message": message]
                 
                 // Add this dictionary to the messagesArray array.
                 messagesArray.append(messageDictionary)
@@ -190,7 +200,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
             }
             else{
                 //in this case, only post the last message
-                var messageDictionary: [String:String] = ["message": message]
+                let messageDictionary: [String:String] = ["message": message]
                 messagesArray.append(messageDictionary)
                 dispatch_async(dispatch_get_main_queue()){
                     self.updateTableView()

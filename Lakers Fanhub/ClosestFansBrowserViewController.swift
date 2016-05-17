@@ -13,33 +13,32 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
     
     @IBOutlet weak var browserTableView: UITableView!
     @IBOutlet weak var cancelButton: UIBarButtonItem!
-    @IBOutlet weak var doneButton: UIBarButtonItem!
     @IBOutlet weak var browserActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var browserViewTopLabel: UILabel!
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var cellDetailText: String!
     var searchingPeer: Bool = true
+    var connectWithPeer: String = ""
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        //prepare view UI according to the status of this browserView
+        if searchingPeer{
+            browserViewTopLabel.text = "Searching"
+            cellDetailText = "Touch to connect"
+        }else{
+            browserViewTopLabel.text = "Connecting"
+            browserTableView.allowsSelection = false
+            cellDetailText = "connecting..."
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //prepare view UI according to the status of this browserView
-        if searchingPeer{
-            browserViewTopLabel.text = "searching"
-            cellDetailText = "Touch to connect"
-        }else{
-            browserViewTopLabel.text = "connecting"
-            browserTableView.allowsSelection = false
-            cellDetailText = "connecting..."
-        }
-        
         browserTableView.delegate = self
         browserTableView.dataSource = self
+        browserTableView.tableFooterView = UIView(frame: CGRectZero)
         appDelegate.mcManager.browserDelegate = self
         appDelegate.mcManager.sessionDelegate = self
         browserActivityIndicator.startAnimating()
@@ -57,33 +56,34 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("browserTableCell")! as UITableViewCell
         let peerID = appDelegate.mcManager.foundPeers[indexPath.row]
-        cell.textLabel?.text = peerID.displayName
+        let cell = tableView.dequeueReusableCellWithIdentifier("browserTableCell")! as! PeerCell
+        cell.foundPeerLabel?.text = peerID.displayName
         
         if appDelegate.mcManager.connectedPeers.containsObject(peerID){
-            cell.detailTextLabel?.text = "connected 😎"
+            cell.connectStatusLabel?.text = "connected 😎"
+        } else if peerID.displayName == connectWithPeer {
+            cell.connectStatusLabel?.text = cellDetailText
         } else {
-            cell.detailTextLabel?.text = cellDetailText
+            cell.connectStatusLabel?.text = "Touch to connect"
         }
         return cell
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 50.0
-    }
-    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        //make sure only send one invitation a time and send only once
+        //By disable selection for tableView after selecting a row, make sure only one invitation is been sent and send only once
         browserTableView.allowsSelection = false
         
-        let cell = tableView.cellForRowAtIndexPath(indexPath)
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! PeerCell
         let peerID = appDelegate.mcManager.foundPeers[indexPath.row]
+        
+        //Set the current connecting peer info with selected peerID
+        connectWithPeer = peerID.displayName
         
         if appDelegate.mcManager.connectedPeers.containsObject(peerID){
             //do noting if the found peer has already connected
         } else {
-            cell!.detailTextLabel!.text = "request sent...😐"
+            cell.connectStatusLabel!.text = "request sent...😐"
             appDelegate.mcManager.browser.invitePeer(peerID, toSession: appDelegate.mcManager.session, withContext: nil, timeout: 10)
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -123,10 +123,6 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
     }
     
     @IBAction func cancelButtonTouched(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    @IBAction func doneButtonTouched(sender: AnyObject) {
         appDelegate.mcManager.foundPeers.removeAll()
         appDelegate.mcManager.browser.stopBrowsingForPeers()
         self.dismissViewControllerAnimated(true, completion: nil)

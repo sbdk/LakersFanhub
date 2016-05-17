@@ -8,6 +8,7 @@
 
 import UIKit
 import MultipeerConnectivity
+//import CoreBluetooth
 
 class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MCManagerInvitationDelegate {
     @IBOutlet weak var deviceNameTextField: UITextField!
@@ -31,14 +32,25 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        appDelegate.mcManager.invitationDelegate = self
         deviceNameTextField.delegate = self
         connectedDeviceTableView.delegate = self
         connectedDeviceTableView.dataSource = self
-        appDelegate.mcManager.invitationDelegate = self
+        ConvenientView.sharedInstance().enhanceItemUI(browserButton, cornerRadius: 30.0)
+        ConvenientView.sharedInstance().enhanceItemUI(disconnectButton, cornerRadius: 30.0)
+//        _ = CBCentralManager()
         
-        browserButton.layer.cornerRadius = 30.0
-        disconnectButton.layer.cornerRadius = 30.0
+        let backgroundImage = UIImage(named: "BeachEffect")
+        let imageView = UIImageView(image: backgroundImage)
+        imageView.contentMode = .ScaleAspectFill
+        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.ExtraLight)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.alpha = 0.5
+        blurView.frame = imageView.bounds
+        imageView.addSubview(blurView)
         
+        connectedDeviceTableView.backgroundView = imageView
+        connectedDeviceTableView.tableFooterView = UIView(frame: CGRectZero)
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)){
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
@@ -56,11 +68,15 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath) as! PeerCell
         let peerID = (appDelegate.mcManager.connectedPeers)[indexPath.row] as! MCPeerID
-        cell.textLabel!.text = peerID.displayName as String
-        cell.detailTextLabel!.text = "connected 😎"
+        cell.connectedPeerLabel!.text = peerID.displayName as String
+        cell.statusLabel!.text = "connected 😎"
         return cell
+    }
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        cell.backgroundColor = UIColor(white: 1, alpha: 0.5)
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -128,6 +144,8 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
                 
                 //indicate that browserView is used for handling invitation from other peer
                 browserViewController.searchingPeer = false
+                browserViewController.connectWithPeer = fromPeer
+                
                 self.appDelegate.window?.rootViewController?.presentViewController(browserViewController, animated: true, completion: nil)
             }
         }

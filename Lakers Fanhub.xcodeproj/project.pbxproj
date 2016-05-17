@@ -13,14 +13,16 @@
 		BE5E327C1CB3888900D8E311 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5E327B1CB3888900D8E311 /* AppDelegate.swift */; };
 		BE5E327E1CB3888900D8E311 /* ConvenientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5E327D1CB3888900D8E311 /* ConvenientView.swift */; };
 		BE5E32811CB3888900D8E311 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE5E327F1CB3888900D8E311 /* Main.storyboard */; };
-		BE5E32831CB3888900D8E311 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE5E32821CB3888900D8E311 /* Assets.xcassets */; };
 		BE5E32861CB3888900D8E311 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE5E32841CB3888900D8E311 /* LaunchScreen.storyboard */; };
 		BE5E32911CB3888900D8E311 /* Lakers_FanhubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5E32901CB3888900D8E311 /* Lakers_FanhubTests.swift */; };
 		BE5E329C1CB3888900D8E311 /* Lakers_FanhubUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5E329B1CB3888900D8E311 /* Lakers_FanhubUITests.swift */; };
 		BE6B11561CE5319B0018F4F5 /* ChatReceivedMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6B11551CE5319B0018F4F5 /* ChatReceivedMessageCell.swift */; };
+		BE7C4BE81CEA4F340069F99D /* MoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7C4BE71CEA4F340069F99D /* MoreViewController.swift */; };
+		BE7C4BEA1CEA74520069F99D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE7C4BE91CEA74520069F99D /* Assets.xcassets */; };
 		BE83FBD61CE2AAA600C80CB1 /* ChatSentMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE83FBD51CE2AAA600C80CB1 /* ChatSentMessageCell.swift */; };
 		BE8E6BDD1CC04D9C00B2B397 /* ClosestFansViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E6BDC1CC04D9C00B2B397 /* ClosestFansViewController.swift */; };
 		BE8E6BDF1CC055FC00B2B397 /* MCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E6BDE1CC055FC00B2B397 /* MCManager.swift */; };
+		BEB1C9AB1CE64E7D0092BF1C /* PeerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB1C9AA1CE64E7D0092BF1C /* PeerCell.swift */; };
 		BEB5BEC81CB56824001AD651 /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BEC71CB56824001AD651 /* XMLParser.swift */; };
 		BEB5BECA1CB6EF8D001AD651 /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */; };
 		BEB5BECE1CB74C56001AD651 /* NewsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BECD1CB74C56001AD651 /* NewsDetailViewController.swift */; };
@@ -57,7 +59,6 @@
 		BE5E327B1CB3888900D8E311 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BE5E327D1CB3888900D8E311 /* ConvenientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvenientView.swift; sourceTree = "<group>"; };
 		BE5E32801CB3888900D8E311 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		BE5E32821CB3888900D8E311 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BE5E32851CB3888900D8E311 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BE5E32871CB3888900D8E311 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BE5E328C1CB3888900D8E311 /* Lakers FanhubTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Lakers FanhubTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,9 +68,12 @@
 		BE5E329B1CB3888900D8E311 /* Lakers_FanhubUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lakers_FanhubUITests.swift; sourceTree = "<group>"; };
 		BE5E329D1CB3888900D8E311 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BE6B11551CE5319B0018F4F5 /* ChatReceivedMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatReceivedMessageCell.swift; sourceTree = "<group>"; };
+		BE7C4BE71CEA4F340069F99D /* MoreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoreViewController.swift; sourceTree = "<group>"; };
+		BE7C4BE91CEA74520069F99D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BE83FBD51CE2AAA600C80CB1 /* ChatSentMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatSentMessageCell.swift; sourceTree = "<group>"; };
 		BE8E6BDC1CC04D9C00B2B397 /* ClosestFansViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosestFansViewController.swift; sourceTree = "<group>"; };
 		BE8E6BDE1CC055FC00B2B397 /* MCManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MCManager.swift; sourceTree = "<group>"; };
+		BEB1C9AA1CE64E7D0092BF1C /* PeerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeerCell.swift; sourceTree = "<group>"; };
 		BEB5BEC71CB56824001AD651 /* XMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParser.swift; sourceTree = "<group>"; };
 		BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
 		BEB5BECD1CB74C56001AD651 /* NewsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsDetailViewController.swift; sourceTree = "<group>"; };
@@ -125,6 +129,7 @@
 		BE5E326F1CB3888900D8E311 = {
 			isa = PBXGroup;
 			children = (
+				BE7C4BE91CEA74520069F99D /* Assets.xcassets */,
 				BE5E327A1CB3888900D8E311 /* Lakers Fanhub */,
 				BE5E328F1CB3888900D8E311 /* Lakers FanhubTests */,
 				BE5E329A1CB3888900D8E311 /* Lakers FanhubUITests */,
@@ -152,7 +157,7 @@
 				BE6B11581CE539280018F4F5 /* NewsFeedTab */,
 				BE6B11571CE539040018F4F5 /* ClosestFansTab */,
 				BE6B115A1CE5397D0018F4F5 /* DailyMatchTab */,
-				BE5E32821CB3888900D8E311 /* Assets.xcassets */,
+				BE7C4BE71CEA4F340069F99D /* MoreViewController.swift */,
 				BE5E327F1CB3888900D8E311 /* Main.storyboard */,
 				BE5E32841CB3888900D8E311 /* LaunchScreen.storyboard */,
 				BE5E32871CB3888900D8E311 /* Info.plist */,
@@ -186,6 +191,7 @@
 				BED3E6791CD95759004C24B8 /* ChatViewController.swift */,
 				BE83FBD51CE2AAA600C80CB1 /* ChatSentMessageCell.swift */,
 				BE6B11551CE5319B0018F4F5 /* ChatReceivedMessageCell.swift */,
+				BEB1C9AA1CE64E7D0092BF1C /* PeerCell.swift */,
 			);
 			name = ClosestFansTab;
 			sourceTree = "<group>";
@@ -329,7 +335,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE5E32861CB3888900D8E311 /* LaunchScreen.storyboard in Resources */,
-				BE5E32831CB3888900D8E311 /* Assets.xcassets in Resources */,
+				BE7C4BEA1CEA74520069F99D /* Assets.xcassets in Resources */,
 				BE5E32811CB3888900D8E311 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -403,11 +409,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEB1C9AB1CE64E7D0092BF1C /* PeerCell.swift in Sources */,
 				BEB5BECE1CB74C56001AD651 /* NewsDetailViewController.swift in Sources */,
 				BE35A1781CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift in Sources */,
 				BE6B11561CE5319B0018F4F5 /* ChatReceivedMessageCell.swift in Sources */,
 				BE83FBD61CE2AAA600C80CB1 /* ChatSentMessageCell.swift in Sources */,
 				BEB5BEC81CB56824001AD651 /* XMLParser.swift in Sources */,
+				BE7C4BE81CEA4F340069F99D /* MoreViewController.swift in Sources */,
 				BE8E6BDD1CC04D9C00B2B397 /* ClosestFansViewController.swift in Sources */,
 				BEE7886A1CB4854400A98F1D /* NewsTableViewController.swift in Sources */,
 				BE573E771CBD91FC0031E00C /* DailyMatchViewController.swift in Sources */,
