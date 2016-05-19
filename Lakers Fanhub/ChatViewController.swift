@@ -17,7 +17,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
     var messagesArray = [[String:String]]()
     var peerID: MCPeerID!
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    //keyboard config
+    //Config keyboard
     var keyboardAdjusted = false
     var lastKeyboardOffset : CGFloat = 0.0
     
@@ -31,17 +31,19 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
         chatTableView.delegate = self
         chatTableView.dataSource = self
         chatTableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        
+        //Auto adjust tableView height according to it's content size
         chatTableView.rowHeight = UITableViewAutomaticDimension
         chatTableView.estimatedRowHeight = 50.0
         
-        let cutButton = UIBarButtonItem(image: UIImage(named: "NoChat"), style: .Plain, target: self, action: #selector(ChatViewController.endChat(_:)))
-        navigationItem.rightBarButtonItem = cutButton
+        let endChatButton = UIBarButtonItem(image: UIImage(named: "NoChat"), style: .Plain, target: self, action: #selector(ChatViewController.endChat(_:)))
+        navigationItem.rightBarButtonItem = endChatButton
         
-        //Put not-so-urgent code into background queue to improve ChatViewContoller load speed
+        //Put not-so-urgent task into background queue to improve ChatViewContoller load speed
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)){
             self.subscribeToKeyboardNotifications()
             
-            //auto adjust table row height
+            //Custom keyboard return key
             self.messageInputTextView.delegate = self
             self.messageInputTextView.returnKeyType = UIReturnKeyType.Send
             self.messageInputTextView.enablesReturnKeyAutomatically = true
@@ -49,6 +51,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleMCReceivedDataWithNotification(_:)), name: "receivedMCDataNotification", object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
             
+            //Add a tapRecognizer to this ChatView, user will tap screen to dismiss keyboard
             let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ChatViewController.handleSingleTap))
             tapRecognizer.numberOfTapsRequired = 1
             self.view.addGestureRecognizer(tapRecognizer)
@@ -58,15 +61,16 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.hidden = true
-//        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName:ConvenientData().lakersPurpleColor]
         navigationItem.title = peerID.displayName
-//      If there is a messageArray object stored for this peerID, use this stored object to populate tableView
-        if (appDelegate.chatMessagesDict?[peerID.displayName]) != nil{
-            messagesArray = (appDelegate.chatMessagesDict?[peerID.displayName])! as! [[String:String]]
+        
+        //If there is a messageArray object stored for this peerID, use this stored object to populate tableView
+        if (appDelegate.mcManager.chatHistoryDict?[peerID.displayName]) != nil{
+            messagesArray = (appDelegate.mcManager.chatHistoryDict?[peerID.displayName])! as! [[String:String]]
         } else {
             messagesArray = []
         }
         
+        //Scroll ChatTableView to last row
         if messagesArray.count > 0 {
             let delay = 0.1 * Double(NSEC_PER_SEC)
             let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
@@ -78,6 +82,8 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        //Upon leave ChatView, reset unread message count for this Peer, since incoming message are still counting during the Chat
+        appDelegate.unreadMessageCount.removeValueForKey(peerID.displayName)
         tabBarController?.tabBar.hidden = false
     }
     
@@ -90,6 +96,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
         let messageBody = currentMessage["message"]
         let messageViewMaxWidth: CGFloat = 240.0
         
+        //Situation that it's a normal message
         if let sender = currentMessage["sender"] {
             if sender == "self"{
                 //implemente outgoing message
@@ -98,9 +105,14 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
                 cell.sentTextView.backgroundColor = UIColor.purpleColor()
                 cell.sentTextView.textColor = UIColor.whiteColor()
                 cell.sentTextView.layer.cornerRadius = 10.0
+                
+                //If the content size of textView is smaller than massageMaxWidth, use adjusted contentsize for this message, which will be a single line message
                 if cell.sentTextView.attributedText.size().width < messageViewMaxWidth {
                     cell.sentTextViewWidth.constant = cell.sentTextView.attributedText.size().width + 10
-                } else {
+                }
+                
+                //If the content size of textView is bigger than massageMaxWidth, fix the message widht to maxWidth and make this messageView muliple line
+                else {
                     cell.sentTextViewWidth.constant = 240.0
                 }
                 return cell
@@ -119,7 +131,9 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
                 }
                 return cell
             }
-        } else {
+        }
+        //Situation that it's the last message
+        else {
             //implemente end-of-chat message
             let cell = tableView.dequeueReusableCellWithIdentifier("receivedMessageCell")! as! ChatReceivedMessageCell
             cell.receivedTextView.backgroundColor = UIColor.whiteColor()
@@ -131,7 +145,10 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
         }
     }
     
+    
+    //Implemente textView delegate method
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        //If user hit return key
         if text == "\n"{
             //first send out this message dictionary to connected peer
             let messageDictionary: [String: String] = ["message": (messageInputTextView?.text)!]
@@ -150,6 +167,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
         return true
     }
     
+    //Another textViewDelegate method, remove the typed-in "return" value from textView
     func textViewDidChange(textView: UITextView) {
         if messageInputTextView.text == "\n"{
             messageInputTextView.text = ""
@@ -160,16 +178,24 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
     //Custom convenient function
     func updateTableView(){
         //whenever chatView has new message to be displayed, save the current messageArray into memory, using current peerID's displayName as dictionary key.
-        appDelegate.chatMessagesDict?[peerID.displayName] = messagesArray
+        appDelegate.mcManager.chatHistoryDict?[peerID.displayName] = messagesArray
         chatTableView.reloadData()
         chatTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messagesArray.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
-        //Check whether the table contentSize is bigger than table creen size, if so, scroll the tableview to most current row
-//        if chatTableView.contentSize.height > chatTableView.frame.size.height {
-//            chatTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messagesArray.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
-//        }
     }
     
-    //this function will be called once the session object received the data and call the notification
+    
+    //Implemente the endChat function for the endChatButton
+    func endChat(sender: AnyObject){
+        print("end chat")
+        let messageDictionary: [String: String] = ["message": "chat is ended by the other party"]
+        if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: peerID){
+            //When user end a chat, also clear it's stored chat history
+            appDelegate.mcManager.chatHistoryDict.removeValueForKey(peerID.displayName)
+            appDelegate.mcManager.session.cancelConnectPeer(peerID)
+        }
+    }
+    
+    //Reaction fucntion used for received Message Notification
     func handleMCReceivedDataWithNotification(notification: NSNotification){
         
         let receivedDataDictionary = notification.object as! [String:AnyObject]
@@ -208,22 +234,14 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
             }
         }
     }
-    
-    func endChat(sender: AnyObject){
-        print("end chat")
-        let messageDictionary: [String: String] = ["message": "chat is ended by the other party"]
-        if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: peerID){
-            appDelegate.chatMessagesDict.removeValueForKey(peerID.displayName)
-            appDelegate.mcManager.session.cancelConnectPeer(peerID)
-        }
-    }
-    
+  
+    //Reaction fucntion used for lostConnection Notification
     func handleLostConnection(notification: NSNotification) {
         
-        //whenever user lost connection with a peer, we need to check whether it's the current chatting peer, if so, present a alertView and return to previous view
+        //whenever user lost connection with a peer, we need to check whether it's the current chatting peer, if so, present an alertView and leave the current ChatView
         if (notification.object) as! MCPeerID == peerID {
             dispatch_sync(dispatch_get_main_queue()){
-                let alterView = UIAlertController(title: "Lost connection", message: "will exit chat window", preferredStyle: UIAlertControllerStyle.Alert)
+                let alterView = UIAlertController(title: "Lost connection", message: "Connection is lost, will dismiss chat window", preferredStyle: UIAlertControllerStyle.Alert)
                 let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel){(OKAction) -> Void in self.navigationController?.popViewControllerAnimated(true)
                 }
                 alterView.addAction(okAction)
@@ -232,6 +250,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
         }
     }
     
+    //Config the TapRecognizer reponse fucntion to dismiss keyboard
     func handleSingleTap(recognizer: UITapGestureRecognizer) {
         self.view.endEditing(true)
     }

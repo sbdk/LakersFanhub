@@ -17,4 +17,7 @@ class PeerCell: UITableViewCell {
      @IBOutlet weak var connectedPeerLabel: UILabel!
     
     @IBOutlet weak var statusLabel: UILabel!
+    
+    @IBOutlet weak var badgeLabel: UILabel!
+    
 }

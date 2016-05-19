@@ -60,11 +60,16 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
         let cell = tableView.dequeueReusableCellWithIdentifier("browserTableCell")! as! PeerCell
         cell.foundPeerLabel?.text = peerID.displayName
         
+        //If already connected peer, it will show up in browserView list, so we set its status label to connected
         if appDelegate.mcManager.connectedPeers.containsObject(peerID){
             cell.connectStatusLabel?.text = "connected 😎"
-        } else if peerID.displayName == connectWithPeer {
+        }
+        //For the peer user currently connecting with, pass cellDetailText value to this peer's status label
+        else if peerID.displayName == connectWithPeer {
             cell.connectStatusLabel?.text = cellDetailText
-        } else {
+        }
+        //For not connecting peer that shown in BrowserView list, set it's status Label to default
+        else {
             cell.connectStatusLabel?.text = "Touch to connect"
         }
         return cell
@@ -81,28 +86,30 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
         connectWithPeer = peerID.displayName
         
         if appDelegate.mcManager.connectedPeers.containsObject(peerID){
-            //do noting if the found peer has already connected
+            //Do noting if the found peer has already connected
         } else {
             cell.connectStatusLabel!.text = "request sent...😐"
+            
+            //Sent the invitation
             appDelegate.mcManager.browser.invitePeer(peerID, toSession: appDelegate.mcManager.session, withContext: nil, timeout: 10)
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
+    //Implemente Custom MCManagerBrowserDelegate
     func foundPeer() {
-        print("find a peer, reaload tableView")
         browserTableView.reloadData()
     }
     
     func lostPeer() {
-        print("lost a peer, reload tableview")
         browserTableView.reloadData()
     }
     
-    //implemente MCManagerSessionDelegate
+    //implemente Custom MCManagerSessionDelegate
     func connectedWithPeer(peerID: MCPeerID) {
         cellDetailText = "connected 😎"
         print(cellDetailText)
+        //When connect success, dismiss the browserView
         dispatch_async(dispatch_get_main_queue()){
            self.dismissViewControllerAnimated(true, completion: nil)
         }
@@ -122,9 +129,8 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
         }
     }
     
+    //Config the dismiss button action
     @IBAction func cancelButtonTouched(sender: AnyObject) {
-        appDelegate.mcManager.foundPeers.removeAll()
-        appDelegate.mcManager.browser.stopBrowsingForPeers()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 }

@@ -8,19 +8,19 @@
 
 import UIKit
 
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var mcManager: MCManager!
     var connectedDevies: NSMutableArray!
-    var chatMessagesDict:[String:AnyObject]!
+    var unreadMessageCount: [String:Int]!
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-//        window?.tintColor = ConvenientData().lakersGoldColor
         mcManager = MCManager()
         connectedDevies = []
-        chatMessagesDict = [:]
+        unreadMessageCount = [:]
         return true
     }
 

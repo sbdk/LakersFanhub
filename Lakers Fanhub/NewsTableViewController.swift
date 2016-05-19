@@ -38,6 +38,7 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
         loadingHUD.opacity = 0.6
         loadingHUD.labelText = "Loading feeds..."
         
+        //Config the custom dropDown navigation bar
         let newsSourceArray = ["Hoops Rumors", "RealGM Basketball", "NBA.com", "ESPN", "LA Times"]
         menuView = BTNavigationDropdownMenu(navigationController: self.navigationController, title: newsSourceArray.first!, items: newsSourceArray)
         menuView.cellTextLabelColor = ConvenientData().lakersGoldColor
@@ -45,15 +46,22 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
         self.navigationItem.titleView = menuView
         newsSoucreString = newsSourceArray.first
         
+        //Config the function when user choose a dropDown item
         menuView.didSelectItemAtIndexHandler = {(indexPath: Int) -> () in
+            
+            //Step-1: show the HUD loading view
             self.tableView.addSubview(self.loadingHUD)
             self.loadingHUD.show(true)
+            
+            //Help function prepared for step-2
             func switchNewsFeed(){
                 self.newsSoucreString = newsSourceArray[indexPath]
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)){
                     self.startParseFeeds()
-                };
+                }
             }
+            
+            //Step-2: parse news feed according to chosed news source
             switch newsSourceArray[indexPath]{
             case "Hoops Rumors":
                 switchNewsFeed()
@@ -74,27 +82,6 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
         }
         refreshControl?.backgroundColor = UIColor.whiteColor()
         refreshControl?.addTarget(self, action: #selector(NewsTableViewController.refreshTable(_:)), forControlEvents: UIControlEvents.ValueChanged)
-  
-//        tableView.cellLayoutMarginsFollowReadableWidth = false
-//        tableView.separatorInset = UIEdgeInsetsZero
-//        tableView.layoutMargins = UIEdgeInsetsZero
-        tableView.contentInset = UIEdgeInsetsMake(0, -8, 0, 0)
-//        tableView.cellLayoutMarginsFollowReadableWidth = false
-        
-        
-
-    }
-    
-    func parseWasFinished() {
-        
-        print("parsed Finished successfully, reload tableData")
-        newsSeeds = seedParser.parsedDataArray
-//        print(newsSeeds)
-        dispatch_async(dispatch_get_main_queue()){
-            self.loadingHUD.hide(true)
-            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
-            self.tableView.reloadData()
-        }
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -104,28 +91,19 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("newsTableViewCell") as! NewsTableViewCell
         let feedDic = newsSeeds[indexPath.row]
-        cell.imageView!.image = UIImage(named: "HoopsRumors")
-        ConvenientView.sharedInstance().setLabel(cell.cellTitle, fontName: "HelveticaNeue-Medium", size: 14, color: titleTextColor)
+        cell.cellImageView.image = UIImage(named: "TableNewsPlaceHolder")
         cell.cellTitle.text = feedDic["title"]
-        
-//        ConvenientView.sharedInstance().setLabel(cell.cellAuthor, fontName: "HelveticaNeue-Light", size: 12, color: subTitleTextColor)
-//        cell.cellAuthor.text = feedDic["name"]
-        
-        ConvenientView.sharedInstance().setLabel(cell.cellFeedPublished, fontName: "HelveticaNeue-Light", size: 12, color: subTitleTextColor)
         cell.cellFeedPublished.text = feedDic["published"] ?? feedDic["pubDate"]
-
-//        cell.preservesSuperviewLayoutMargins = false
-//        cell.layoutMargins = UIEdgeInsetsZero
-
+        ConvenientView.sharedInstance().setLabel(cell.cellTitle, fontName: "HelveticaNeue-Medium", size: 14, color: titleTextColor)
+        ConvenientView.sharedInstance().setLabel(cell.cellFeedPublished, fontName: "HelveticaNeue-Light", size: 12, color: subTitleTextColor)
         return cell
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 60.0
+        return 70.0
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
         let feedDic = newsSeeds[indexPath.row]
         let controller = self.storyboard?.instantiateViewControllerWithIdentifier("NewsDetailViewController") as! NewsDetailViewController
         controller.feedURLString = feedDic["link"]!
@@ -134,22 +112,30 @@ class NewsTableViewController: UITableViewController, XMLParserDelegate {
         
     }
     
-    override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        
+    //Implemente XMLParserDelegate method
+    func parseWasFinished() {
+        newsSeeds = seedParser.parsedDataArray
+        dispatch_async(dispatch_get_main_queue()){
+            self.loadingHUD.hide(true)
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+            self.tableView.reloadData()
+        }
     }
     
+    //Action fucntion for pull-down-refresh
+    func refreshTable(refreshControl: UIRefreshControl){
+        newsSeeds = [[String:String]]()
+        tableView.reloadData()
+        startParseFeeds()
+        refreshControl.endRefreshing()
+    }
+    
+    //Help function for XMLParser
     func startParseFeeds(){
         seedParser.parsedDataArray = []
         seedParser.currentDataDic = [String:String]()
         let url = NSURL(string: ConvenientData().newsSourceDict[newsSoucreString]!)
         seedParser.delegate = self
         seedParser.parseWithURL(url!)
-    }
-    
-    func refreshTable(refreshControl: UIRefreshControl){
-        newsSeeds = [[String:String]]()
-        tableView.reloadData()
-        startParseFeeds()
-        refreshControl.endRefreshing()
     }
 }

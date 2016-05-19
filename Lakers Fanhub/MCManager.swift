@@ -36,6 +36,7 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
     
     var foundPeers = [MCPeerID]()
     var connectedPeers: NSMutableArray!
+    var chatHistoryDict:[String:AnyObject]!
 //    var invitationHandler: ((Bool, MCSession!)->Void)!
     
     var browserDelegate: MCManagerBrowserDelegate?
@@ -52,6 +53,7 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
         advertiser = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: nil, serviceType: "lakers-fanhub")
         advertiser.delegate = self
         connectedPeers = []
+        chatHistoryDict = [:]
     }
     
     func browser(browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {

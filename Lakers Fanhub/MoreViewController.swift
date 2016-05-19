@@ -10,10 +10,12 @@ import UIKit
 import MBProgressHUD
 
 class MoreViewController: UIViewController {
-    @IBOutlet weak var backgroundImageView: UIImageView!
+
+    @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var rateUsButton: UIButton!
     @IBOutlet weak var shareButton: UIButton!
     var doneHUD: MBProgressHUD!
+    var shareViewController: UIActivityViewController!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -22,21 +24,32 @@ class MoreViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Set rateUs image
+        let rateImage = UIImage(named: "LakersFanhubRateUs")
+        imageView.image = rateImage
+        imageView.contentMode = .ScaleAspectFill
         
-        let backgroundImage = UIImage(named: "LakersFanhubRateUs")
-        backgroundImageView.image = backgroundImage
-        backgroundImageView.contentMode = .ScaleAspectFill
-        
+        //Custom two buttons
         ConvenientView.sharedInstance().enhanceItemUI(rateUsButton, cornerRadius: 10.0)
         ConvenientView.sharedInstance().enhanceItemUI(shareButton, cornerRadius: 10.0)
         
+        //Prepare HUDView for share action
         doneHUD = MBProgressHUD()
-        self.view.addSubview(doneHUD)
         doneHUD.mode = MBProgressHUDMode.CustomView
         let image = UIImage(named: "CheckMark")
         doneHUD.customView = UIImageView.init(image: image)
         doneHUD.square = true
         doneHUD.labelText = "Done"
+        self.view.addSubview(doneHUD)
+        
+        shareViewController = UIActivityViewController(activityItems: ["haha"], applicationActivities: nil)
+        shareViewController.completionWithItemsHandler = {
+            activity, completed, items, error in
+            if completed {
+                self.doneHUD.show(true)
+                self.doneHUD.hide(true, afterDelay: 1.0)
+            }
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -49,20 +62,7 @@ class MoreViewController: UIViewController {
     
     
     @IBAction func shareButtonTouched(sender: AnyObject) {
-        let shareViewController = UIActivityViewController(activityItems: ["haha"], applicationActivities: nil)
-        shareViewController.completionWithItemsHandler = {
-            activity, completed, items, error in
-            if completed {
-                self.doneHUD.show(true)
-//                let actionHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
-//                actionHUD.mode = MBProgressHUDMode.CustomView
-//                let image = UIImage(named: "CheckMark")
-//                actionHUD.customView = UIImageView.init(image: image)
-//                actionHUD.square = true
-//                actionHUD.labelText = "Done"
-                self.doneHUD.hide(true, afterDelay: 1.0)
-            }
-        }
+        
         presentViewController(shareViewController, animated: true, completion: nil)
     }
 

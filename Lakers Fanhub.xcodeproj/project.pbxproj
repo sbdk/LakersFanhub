@@ -22,6 +22,7 @@
 		BE83FBD61CE2AAA600C80CB1 /* ChatSentMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE83FBD51CE2AAA600C80CB1 /* ChatSentMessageCell.swift */; };
 		BE8E6BDD1CC04D9C00B2B397 /* ClosestFansViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E6BDC1CC04D9C00B2B397 /* ClosestFansViewController.swift */; };
 		BE8E6BDF1CC055FC00B2B397 /* MCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E6BDE1CC055FC00B2B397 /* MCManager.swift */; };
+		BE9B5BA01CED87B6007F3A14 /* LaunchScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9B5B9F1CED87B6007F3A14 /* LaunchScreenViewController.swift */; };
 		BEB1C9AB1CE64E7D0092BF1C /* PeerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB1C9AA1CE64E7D0092BF1C /* PeerCell.swift */; };
 		BEB5BEC81CB56824001AD651 /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BEC71CB56824001AD651 /* XMLParser.swift */; };
 		BEB5BECA1CB6EF8D001AD651 /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */; };
@@ -73,6 +74,7 @@
 		BE83FBD51CE2AAA600C80CB1 /* ChatSentMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatSentMessageCell.swift; sourceTree = "<group>"; };
 		BE8E6BDC1CC04D9C00B2B397 /* ClosestFansViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosestFansViewController.swift; sourceTree = "<group>"; };
 		BE8E6BDE1CC055FC00B2B397 /* MCManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MCManager.swift; sourceTree = "<group>"; };
+		BE9B5B9F1CED87B6007F3A14 /* LaunchScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LaunchScreenViewController.swift; sourceTree = "<group>"; };
 		BEB1C9AA1CE64E7D0092BF1C /* PeerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeerCell.swift; sourceTree = "<group>"; };
 		BEB5BEC71CB56824001AD651 /* XMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParser.swift; sourceTree = "<group>"; };
 		BEB5BEC91CB6EF8D001AD651 /* NewsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
@@ -126,6 +128,14 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		BE1E76991CEBC497000FECED /* MoreTab */ = {
+			isa = PBXGroup;
+			children = (
+				BE7C4BE71CEA4F340069F99D /* MoreViewController.swift */,
+			);
+			name = MoreTab;
+			sourceTree = "<group>";
+		};
 		BE5E326F1CB3888900D8E311 = {
 			isa = PBXGroup;
 			children = (
@@ -153,13 +163,14 @@
 			isa = PBXGroup;
 			children = (
 				BE5E327B1CB3888900D8E311 /* AppDelegate.swift */,
+				BE9B5B9F1CED87B6007F3A14 /* LaunchScreenViewController.swift */,
 				BE6B11591CE5394D0018F4F5 /* Model */,
 				BE6B11581CE539280018F4F5 /* NewsFeedTab */,
 				BE6B11571CE539040018F4F5 /* ClosestFansTab */,
 				BE6B115A1CE5397D0018F4F5 /* DailyMatchTab */,
-				BE7C4BE71CEA4F340069F99D /* MoreViewController.swift */,
-				BE5E327F1CB3888900D8E311 /* Main.storyboard */,
+				BE1E76991CEBC497000FECED /* MoreTab */,
 				BE5E32841CB3888900D8E311 /* LaunchScreen.storyboard */,
+				BE5E327F1CB3888900D8E311 /* Main.storyboard */,
 				BE5E32871CB3888900D8E311 /* Info.plist */,
 			);
 			path = "Lakers Fanhub";
@@ -425,6 +436,7 @@
 				BE5E327C1CB3888900D8E311 /* AppDelegate.swift in Sources */,
 				BEB5BECA1CB6EF8D001AD651 /* NewsTableViewCell.swift in Sources */,
 				BED3E67A1CD95759004C24B8 /* ChatViewController.swift in Sources */,
+				BE9B5BA01CED87B6007F3A14 /* LaunchScreenViewController.swift in Sources */,
 				BE8E6BDF1CC055FC00B2B397 /* MCManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

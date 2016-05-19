@@ -52,13 +52,14 @@ class ConvenientView: NSObject {
         naviBar!.translucent = false
     }
     
-    func enhanceItemUI(button: AnyObject, cornerRadius: CGFloat){
+    func enhanceItemUI(button: UIButton, cornerRadius: CGFloat){
         
         button.layer.shadowColor = UIColor.blackColor().CGColor
         button.layer.shadowOpacity = 0.3
         button.layer.shadowRadius = 3
         button.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
         button.layer.cornerRadius = cornerRadius
+        button.showsTouchWhenHighlighted = true
         
     }
 }
