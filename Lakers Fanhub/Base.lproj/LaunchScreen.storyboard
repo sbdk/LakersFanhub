@@ -17,25 +17,30 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="basket" translatesAutoresizingMaskIntoConstraints="NO" id="oHF-Il-P5p">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DTL-4M-Ylo">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchScreenIcon" translatesAutoresizingMaskIntoConstraints="NO" id="YLW-Q4-wf2">
-                                <rect key="frame" x="147" y="120" width="80" height="80"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchScreenIcon" translatesAutoresizingMaskIntoConstraints="NO" id="YLW-Q4-wf2">
+                                        <rect key="frame" x="147" y="283.5" width="80" height="80"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="80" id="DQ7-I8-YNd"/>
+                                            <constraint firstAttribute="height" constant="80" id="i1n-Gy-GOA"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="80" id="DQ7-I8-YNd"/>
-                                    <constraint firstAttribute="height" constant="80" id="i1n-Gy-GOA"/>
+                                    <constraint firstItem="YLW-Q4-wf2" firstAttribute="centerY" secondItem="DTL-4M-Ylo" secondAttribute="centerY" id="7IT-ed-sni"/>
+                                    <constraint firstItem="YLW-Q4-wf2" firstAttribute="centerX" secondItem="DTL-4M-Ylo" secondAttribute="centerX" id="YZo-OK-reK"/>
                                 </constraints>
-                            </imageView>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="oHF-Il-P5p" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" id="HQl-ql-9WG"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="oHF-Il-P5p" secondAttribute="bottom" id="QIY-eg-Ydd"/>
-                            <constraint firstAttribute="trailing" secondItem="oHF-Il-P5p" secondAttribute="trailing" id="hOh-GF-Y5f"/>
-                            <constraint firstItem="oHF-Il-P5p" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="p8Q-fO-w0C"/>
-                            <constraint firstItem="YLW-Q4-wf2" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="100" id="uh0-Ck-knk"/>
-                            <constraint firstItem="YLW-Q4-wf2" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="ziV-Rd-nM2"/>
+                            <constraint firstItem="DTL-4M-Ylo" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" id="QCW-nf-Lbu"/>
+                            <constraint firstItem="DTL-4M-Ylo" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="Tw7-Xa-eJU"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="DTL-4M-Ylo" secondAttribute="bottom" id="WAp-pz-heM"/>
+                            <constraint firstAttribute="trailing" secondItem="DTL-4M-Ylo" secondAttribute="trailing" id="uZO-a8-va8"/>
                         </constraints>
                     </view>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
@@ -47,7 +52,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchScreenIcon" width="80" height="80"/>
-        <image name="basket" width="1275" height="1920"/>
+        <image name="LaunchScreenIcon" width="88" height="88"/>
     </resources>
 </document>

@@ -30,6 +30,7 @@
 		BEB5BED01CB87659001AD651 /* ConvenientData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5BECF1CB87659001AD651 /* ConvenientData.swift */; };
 		BED3E67A1CD95759004C24B8 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED3E6791CD95759004C24B8 /* ChatViewController.swift */; };
 		BED7AFE91CDD533D00666E29 /* KeyboardConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED7AFE81CDD533D00666E29 /* KeyboardConfig.swift */; };
+		BEE3B6BA1CEED6C6005E6827 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE3B6B91CEED6C6005E6827 /* HelpViewController.swift */; };
 		BEE7886A1CB4854400A98F1D /* NewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE788691CB4854400A98F1D /* NewsTableViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +83,7 @@
 		BEB5BECF1CB87659001AD651 /* ConvenientData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvenientData.swift; sourceTree = "<group>"; };
 		BED3E6791CD95759004C24B8 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		BED7AFE81CDD533D00666E29 /* KeyboardConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardConfig.swift; sourceTree = "<group>"; };
+		BEE3B6B91CEED6C6005E6827 /* HelpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		BEE788691CB4854400A98F1D /* NewsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -203,6 +205,7 @@
 				BE83FBD51CE2AAA600C80CB1 /* ChatSentMessageCell.swift */,
 				BE6B11551CE5319B0018F4F5 /* ChatReceivedMessageCell.swift */,
 				BEB1C9AA1CE64E7D0092BF1C /* PeerCell.swift */,
+				BEE3B6B91CEED6C6005E6827 /* HelpViewController.swift */,
 			);
 			name = ClosestFansTab;
 			sourceTree = "<group>";
@@ -438,6 +441,7 @@
 				BED3E67A1CD95759004C24B8 /* ChatViewController.swift in Sources */,
 				BE9B5BA01CED87B6007F3A14 /* LaunchScreenViewController.swift in Sources */,
 				BE8E6BDF1CC055FC00B2B397 /* MCManager.swift in Sources */,
+				BEE3B6BA1CEED6C6005E6827 /* HelpViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

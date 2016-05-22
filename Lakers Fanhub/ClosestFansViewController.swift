@@ -10,12 +10,14 @@ import UIKit
 import MultipeerConnectivity
 //import CoreBluetooth
 
-class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MCManagerInvitationDelegate {
+class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, MCManagerInvitationDelegate {
     @IBOutlet weak var deviceNameTextField: UITextField!
     @IBOutlet weak var visibleSwitch: UISwitch!
     @IBOutlet weak var connectedDeviceTableView: UITableView!
     @IBOutlet weak var disconnectButton: UIButton!
     @IBOutlet weak var browserButton: UIButton!
+    @IBOutlet weak var helpButton: UIButton!
+    @IBOutlet weak var switchView: UIView!
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     let defaults = NSUserDefaults.standardUserDefaults()
@@ -43,6 +45,9 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         connectedDeviceTableView.tableFooterView = UIView(frame: CGRectZero)
         ConvenientView.sharedInstance().enhanceItemUI(browserButton, cornerRadius: 30.0)
         ConvenientView.sharedInstance().enhanceItemUI(disconnectButton, cornerRadius: 30.0)
+        helpButton.showsTouchWhenHighlighted = true
+        switchView.layer.borderWidth = 1.0
+        switchView.layer.borderColor = UIColor.whiteColor().CGColor
         
         //Check whether user has previouly set custom ChatID, if so, reset MCManager session with this custom ChatID
         if let customChatID = self.defaults.valueForKey("customChatID") as? String {
@@ -160,6 +165,33 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         appDelegate.mcManager.chatHistoryDict.removeAll()
         connectedDeviceTableView.reloadData()
     }
+    
+    //Config helpButton action
+    @IBAction func callForHelp(sender: AnyObject) {
+        
+        
+        let helpView = self.storyboard?.instantiateViewControllerWithIdentifier("HelpViewController") as! HelpViewController
+//        let helpView = HelpViewController()
+        helpView.modalPresentationStyle = .Popover
+        helpView.popoverPresentationController?.delegate = self
+        
+
+        self.presentViewController(helpView, animated: true, completion: nil)
+        if let popView = helpView.popoverPresentationController{
+            
+            let sourceView = sender as! UIView
+            popView.sourceView = sourceView
+            popView.sourceRect = sourceView.bounds
+            popView.permittedArrowDirections = .Down
+            helpView.preferredContentSize = CGSizeMake(self.view.bounds.width - 50, self.view.bounds.height - 100)
+        }
+       
+    }
+    
+    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
+        return UIModalPresentationStyle.None
+    }
+    
     
     //Config visibleSwitch
     @IBAction func toggleVisiblity(sender: AnyObject) {
