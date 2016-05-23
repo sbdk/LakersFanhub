@@ -25,6 +25,13 @@ class ConvenientView: NSObject {
         hostView.presentViewController(controller, animated: true, completion: nil)
     }
     
+    func showNoConnectionAlertView(hostView: UIViewController){
+        let controller = UIAlertController(title: "No Internet Connection", message: "Please check your network connection and try again later", preferredStyle: UIAlertControllerStyle.Alert)
+        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil)
+        controller.addAction(okAction)
+        hostView.presentViewController(controller, animated: true, completion: nil)
+    }
+    
     func setLabel(label: UILabel, fontName: String, size: CGFloat, color: UIColor){
         label.font = UIFont(name: fontName, size: size)
         label.textColor = color

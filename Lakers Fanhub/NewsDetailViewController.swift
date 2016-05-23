@@ -17,16 +17,18 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
     var progressHUD: MBProgressHUD!
     @IBOutlet weak var shareButton: UIBarButtonItem!
     
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
+    
+    //Initialize WebView
     required init(coder aDecoder: NSCoder) {
         self.webView = WKWebView(frame: CGRectZero)
         super.init(coder: aDecoder)!
         webView.navigationDelegate = self
     }
     
-    override func prefersStatusBarHidden() -> Bool {
-        return true
-    }
-    
+    //Observe the webpage loading progress
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "estimatedProgress" {
             
@@ -60,7 +62,7 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
         let height = NSLayoutConstraint(item: webView, attribute: .Height, relatedBy: .Equal, toItem: view, attribute: .Height, multiplier: 1, constant: 0)
         let width = NSLayoutConstraint(item: webView, attribute: .Width, relatedBy: .Equal, toItem: view, attribute: .Width, multiplier: 1, constant: 0)
         view.addConstraints([height, width])
-        
+
         progressHUD = MBProgressHUD()
         self.view.addSubview(progressHUD)
         progressHUD.mode = MBProgressHUDMode.DeterminateHorizontalBar
@@ -72,6 +74,11 @@ class NewsDetailViewController: UIViewController, WKNavigationDelegate, UIScroll
             let url = NSURL(string:self.feedURLString)
             let request = NSURLRequest(URL:url!)
             self.webView.loadRequest(request)
+        }
+        
+        //If there is no internet connection, show the noConnectionAlertView
+        if !Reachability.isConnectedToNetwork(){
+            ConvenientView.sharedInstance().showNoConnectionAlertView(self)
         }
     }
     

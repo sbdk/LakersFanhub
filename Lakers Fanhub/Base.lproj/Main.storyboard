@@ -121,18 +121,6 @@
                     </tableView>
                     <navigationItem key="navigationItem" id="ar7-KI-4lh"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
-                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="uA5-hU-YHF">
-                        <autoresizingMask key="autoresizingMask"/>
-                        <attributedString key="attributedTitle">
-                            <fragment content="Refreshing...">
-                                <attributes>
-                                    <color key="NSColor" red="0.26274509800000001" green="0.054901960780000002" blue="0.4431372549" alpha="1" colorSpace="calibratedRGB"/>
-                                    <font key="NSFont" metaFont="smallSystem"/>
-                                    <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                </attributes>
-                            </fragment>
-                        </attributedString>
-                    </refreshControl>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="color" keyPath="titleTextColor">
                             <color key="value" red="0.29803922770000002" green="0.29803922770000002" blue="0.29803922770000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -603,7 +591,7 @@
                                     </mask>
                                 </variation>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Name" translatesAutoresizingMaskIntoConstraints="NO" id="ehx-Qy-FcM">
+                            <imageView userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ChatID" translatesAutoresizingMaskIntoConstraints="NO" id="ehx-Qy-FcM">
                                 <rect key="frame" x="16" y="200" width="30" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="HJs-WJ-rJA"/>
@@ -641,14 +629,14 @@
                                     </mask>
                                 </variation>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Ei-AI-w5E">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Ei-AI-w5E">
                                 <rect key="frame" x="66" y="20" width="218" height="55.5"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="RPW-NJ-Ib7"/>
                                     <constraint firstAttribute="height" constant="80" id="gP6-j2-WRT"/>
                                 </constraints>
                                 <attributedString key="attributedText">
-                                    <fragment content="Bluetooth or Wifi is required for searching other devices or to be discovered by others">
+                                    <fragment content="Bluetooth or Wifi is required turned on for searching other devices or to be discovered by others">
                                         <attributes>
                                             <color key="NSColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                             <font key="NSFont" size="15" name="HelveticaNeue-Light"/>
@@ -697,8 +685,8 @@
                                 <nil key="highlightedColor"/>
                                 <variation key="default">
                                     <mask key="constraints">
-                                        <exclude reference="U9n-qh-nqT"/>
                                         <exclude reference="PEL-is-Xrm"/>
+                                        <exclude reference="U9n-qh-nqT"/>
                                     </mask>
                                 </variation>
                             </label>
@@ -950,6 +938,7 @@
                     <connections>
                         <outlet property="backwardButton" destination="dSM-JL-aaB" id="xwe-l4-Fqk"/>
                         <outlet property="forwardButton" destination="c7j-ma-qBN" id="Up2-go-Stu"/>
+                        <outlet property="homeButton" destination="YzB-tb-anU" id="Bve-B5-vzR"/>
                         <outlet property="reloadButton" destination="18O-0B-xgK" id="vFf-2N-xGQ"/>
                     </connections>
                 </viewController>
@@ -1251,6 +1240,7 @@
     </scenes>
     <resources>
         <image name="CalendarTabItem" width="25" height="25"/>
+        <image name="ChatID" width="30" height="24"/>
         <image name="DeleteLink" width="30" height="30"/>
         <image name="DeleteLinkGold" width="30" height="30"/>
         <image name="Find" width="30" height="30"/>
@@ -1258,7 +1248,6 @@
         <image name="HomeItem" width="25" height="25"/>
         <image name="LeftArrow" width="25" height="25"/>
         <image name="MoreTabItem" width="25" height="25"/>
-        <image name="Name" width="30" height="30"/>
         <image name="NewsTabItem" width="23" height="22"/>
         <image name="NoChatGold" width="30" height="30"/>
         <image name="Refresh" width="25" height="25"/>
