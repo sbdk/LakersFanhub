@@ -23,5 +23,6 @@ class PeerCell: UITableViewCell {
     
     @IBOutlet weak var historyPeer: UILabel!
     
-    @IBOutlet weak var historyMessageCount: UILabel!
+
+    @IBOutlet weak var historyPeerLastChatTime: UILabel!
 }

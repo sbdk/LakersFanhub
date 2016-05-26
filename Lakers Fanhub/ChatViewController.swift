@@ -18,6 +18,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
     var chatPeer: ChatPeer!
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     let defaults = NSUserDefaults.standardUserDefaults()
+    var readOnly: Bool = false
     
     //Preapare for keyboard config
     var keyboardAdjusted = false
@@ -63,11 +64,33 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
         super.viewWillAppear(animated)
         tabBarController?.tabBar.hidden = true
         navigationItem.title = chatPeer.peerID.displayName
+        if readOnly{
+            messageInputTextView.editable = false
+            messageInputTextView.text = "This peer is not currently connected"
+            messageInputTextView.textColor = UIColor.lightGrayColor()
+            messageInputTextView.textAlignment = .Center
+            navigationItem.rightBarButtonItem?.enabled = false
+        } else {
+            messageInputTextView.editable = true
+            messageInputTextView.text = ""
+            messageInputTextView.textAlignment = .Left
+        }
         
         fetchedResultController.delegate = self
         do{
             try fetchedResultController.performFetch()
         } catch{print(error)}
+        
+        //Scroll tableView to bottom
+        if let storedMessages = fetchedResultController.fetchedObjects {
+            if storedMessages.count > 0 {
+                let delay = 0.1 * Double(NSEC_PER_SEC)
+                let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
+                dispatch_after(time, dispatch_get_main_queue()){
+                    self.chatTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: storedMessages.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
+                }
+            }
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -201,7 +224,6 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
     }()
     
     lazy var fetchedResultController: NSFetchedResultsController = {
-        
         let fetchRequest = NSFetchRequest(entityName: "ChatMessage")
         fetchRequest.predicate = NSPredicate(format: "messagePeer == %@", self.chatPeer)
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "messageTime", ascending: true)]
