@@ -4,11 +4,6 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Alamofire.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>BTNavigationDropdownMenu.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -27,12 +22,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>79C040AFDDCE1BCBF6D8B5EB0B85887F</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>E398DD5608318BC8916CA7568C0607BF</key>
+		<key>3A2172BE48AC0B42D80737D569AC9E36</key>
 		<dict>
 			<key>primary</key>
 			<true/>

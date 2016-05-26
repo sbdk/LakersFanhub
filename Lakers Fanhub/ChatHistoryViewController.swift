@@ -57,7 +57,7 @@ class ChatHistoryViewController: UITableViewController, NSFetchedResultsControll
         let formatter = NSDateFormatter()
         formatter.dateStyle = .ShortStyle
         formatter.timeStyle = .ShortStyle
-        cell.historyPeerLastChatTime.text = "Last chat@ " + formatter.stringFromDate(storedPeer.lastChatTime)
+        cell.historyPeerLastChatTime.text = "Last connected@  " + formatter.stringFromDate(storedPeer.lastChatTime)
         cell.historyPeerLastChatTime.textColor = UIColor.lightGrayColor()
         
         //Check whether this peer is currently connected
@@ -98,6 +98,10 @@ class ChatHistoryViewController: UITableViewController, NSFetchedResultsControll
             }
         default: break
         }
+    }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 50.0
     }
     
     //Button action

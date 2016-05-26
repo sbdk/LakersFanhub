@@ -5,6 +5,7 @@
 //  Created by Li Yin on 5/16/16.
 //  Copyright © 2016 Li Yin. All rights reserved.
 //
+//This view controller is prepared for AppStore submition
 
 import UIKit
 import MBProgressHUD
@@ -32,6 +33,7 @@ class MoreViewController: UIViewController {
         //Custom two buttons
         ConvenientView.sharedInstance().enhanceItemUI(rateUsButton, cornerRadius: 10.0)
         ConvenientView.sharedInstance().enhanceItemUI(shareButton, cornerRadius: 10.0)
+        shareButton.hidden = true
         
         //Prepare HUDView for share action
         doneHUD = MBProgressHUD()
@@ -53,7 +55,7 @@ class MoreViewController: UIViewController {
     }
     
     override func viewWillDisappear(animated: Bool) {
-        super.viewWillAppear(animated)
+        super.viewWillDisappear(animated)
         navigationController?.navigationBar.hidden = false
     }
     
@@ -65,6 +67,4 @@ class MoreViewController: UIViewController {
         
         presentViewController(shareViewController, animated: true, completion: nil)
     }
-
-    
 }

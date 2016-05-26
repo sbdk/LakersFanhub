@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '57CDC0320FE8FD2FA9769B34'
+               BlueprintIdentifier = '98D33A4CDDF8430876D35DFB'
                BlueprintName = 'Pods-Lakers Fanhub'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'Pods_Lakers_Fanhub.framework'>
