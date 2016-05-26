@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		7C15A9154E6AAB8FF5285CDC /* Pods_Lakers_Fanhub.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0112825CDFDF6E893622A791 /* Pods_Lakers_Fanhub.framework */; };
 		BE143CFF1CF25E4C00D39AA6 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE143CFE1CF25E4C00D39AA6 /* Reachability.swift */; };
+		BE24A0DB1CF3B846004DE362 /* ChatHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24A0DA1CF3B846004DE362 /* ChatHistoryViewController.swift */; };
+		BE24A0DD1CF3BF83004DE362 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24A0DC1CF3BF83004DE362 /* CoreDataStackManager.swift */; };
+		BE24A0E01CF3C0BD004DE362 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BE24A0DE1CF3C0BD004DE362 /* Model.xcdatamodeld */; };
+		BE24A0E21CF3C1F0004DE362 /* ChatPeer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24A0E11CF3C1F0004DE362 /* ChatPeer.swift */; };
 		BE35A1781CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE35A1771CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift */; };
 		BE573E771CBD91FC0031E00C /* DailyMatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE573E761CBD91FC0031E00C /* DailyMatchViewController.swift */; };
 		BE5E327C1CB3888900D8E311 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5E327B1CB3888900D8E311 /* AppDelegate.swift */; };
@@ -17,6 +21,7 @@
 		BE5E32861CB3888900D8E311 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE5E32841CB3888900D8E311 /* LaunchScreen.storyboard */; };
 		BE5E32911CB3888900D8E311 /* Lakers_FanhubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5E32901CB3888900D8E311 /* Lakers_FanhubTests.swift */; };
 		BE5E329C1CB3888900D8E311 /* Lakers_FanhubUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5E329B1CB3888900D8E311 /* Lakers_FanhubUITests.swift */; };
+		BE60EA981CF55E5D0004AEF8 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE60EA971CF55E5D0004AEF8 /* ChatMessage.swift */; };
 		BE6B11561CE5319B0018F4F5 /* ChatReceivedMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6B11551CE5319B0018F4F5 /* ChatReceivedMessageCell.swift */; };
 		BE7C4BE81CEA4F340069F99D /* MoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7C4BE71CEA4F340069F99D /* MoreViewController.swift */; };
 		BE7C4BEA1CEA74520069F99D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE7C4BE91CEA74520069F99D /* Assets.xcassets */; };
@@ -57,6 +62,10 @@
 		85DE48EB596B6F942B84DCF0 /* Pods-Lakers Fanhub.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lakers Fanhub.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Lakers Fanhub/Pods-Lakers Fanhub.debug.xcconfig"; sourceTree = "<group>"; };
 		8EC0489A10AFA342DA03A69C /* Pods-Lakers Fanhub.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lakers Fanhub.release.xcconfig"; path = "Pods/Target Support Files/Pods-Lakers Fanhub/Pods-Lakers Fanhub.release.xcconfig"; sourceTree = "<group>"; };
 		BE143CFE1CF25E4C00D39AA6 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		BE24A0DA1CF3B846004DE362 /* ChatHistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryViewController.swift; sourceTree = "<group>"; };
+		BE24A0DC1CF3BF83004DE362 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
+		BE24A0DF1CF3C0BD004DE362 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		BE24A0E11CF3C1F0004DE362 /* ChatPeer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatPeer.swift; sourceTree = "<group>"; };
 		BE35A1771CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosestFansBrowserViewController.swift; sourceTree = "<group>"; };
 		BE573E761CBD91FC0031E00C /* DailyMatchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyMatchViewController.swift; sourceTree = "<group>"; };
 		BE5E32781CB3888900D8E311 /* Lakers Fanhub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lakers Fanhub.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -71,6 +80,7 @@
 		BE5E32971CB3888900D8E311 /* Lakers FanhubUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Lakers FanhubUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE5E329B1CB3888900D8E311 /* Lakers_FanhubUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lakers_FanhubUITests.swift; sourceTree = "<group>"; };
 		BE5E329D1CB3888900D8E311 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BE60EA971CF55E5D0004AEF8 /* ChatMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		BE6B11551CE5319B0018F4F5 /* ChatReceivedMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatReceivedMessageCell.swift; sourceTree = "<group>"; };
 		BE7C4BE71CEA4F340069F99D /* MoreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoreViewController.swift; sourceTree = "<group>"; };
 		BE7C4BE91CEA74520069F99D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -198,12 +208,24 @@
 			path = "Lakers FanhubUITests";
 			sourceTree = "<group>";
 		};
+		BE60EA961CF55E390004AEF8 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				BE24A0DE1CF3C0BD004DE362 /* Model.xcdatamodeld */,
+				BE24A0DC1CF3BF83004DE362 /* CoreDataStackManager.swift */,
+				BE24A0E11CF3C1F0004DE362 /* ChatPeer.swift */,
+				BE60EA971CF55E5D0004AEF8 /* ChatMessage.swift */,
+			);
+			name = CoreData;
+			sourceTree = "<group>";
+		};
 		BE6B11571CE539040018F4F5 /* ClosestFansTab */ = {
 			isa = PBXGroup;
 			children = (
 				BE8E6BDC1CC04D9C00B2B397 /* ClosestFansViewController.swift */,
 				BE35A1771CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift */,
 				BED3E6791CD95759004C24B8 /* ChatViewController.swift */,
+				BE24A0DA1CF3B846004DE362 /* ChatHistoryViewController.swift */,
 				BE83FBD51CE2AAA600C80CB1 /* ChatSentMessageCell.swift */,
 				BE6B11551CE5319B0018F4F5 /* ChatReceivedMessageCell.swift */,
 				BEB1C9AA1CE64E7D0092BF1C /* PeerCell.swift */,
@@ -225,6 +247,7 @@
 		BE6B11591CE5394D0018F4F5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				BE60EA961CF55E390004AEF8 /* CoreData */,
 				BE5E327D1CB3888900D8E311 /* ConvenientView.swift */,
 				BEB5BECF1CB87659001AD651 /* ConvenientData.swift */,
 				BEB5BEC71CB56824001AD651 /* XMLParser.swift */,
@@ -427,17 +450,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEB1C9AB1CE64E7D0092BF1C /* PeerCell.swift in Sources */,
+				BE24A0E01CF3C0BD004DE362 /* Model.xcdatamodeld in Sources */,
 				BEB5BECE1CB74C56001AD651 /* NewsDetailViewController.swift in Sources */,
 				BE35A1781CD2DCFB00A730F4 /* ClosestFansBrowserViewController.swift in Sources */,
 				BE6B11561CE5319B0018F4F5 /* ChatReceivedMessageCell.swift in Sources */,
 				BE83FBD61CE2AAA600C80CB1 /* ChatSentMessageCell.swift in Sources */,
 				BEB5BEC81CB56824001AD651 /* XMLParser.swift in Sources */,
+				BE60EA981CF55E5D0004AEF8 /* ChatMessage.swift in Sources */,
 				BE7C4BE81CEA4F340069F99D /* MoreViewController.swift in Sources */,
+				BE24A0DB1CF3B846004DE362 /* ChatHistoryViewController.swift in Sources */,
 				BE8E6BDD1CC04D9C00B2B397 /* ClosestFansViewController.swift in Sources */,
 				BEE7886A1CB4854400A98F1D /* NewsTableViewController.swift in Sources */,
 				BE573E771CBD91FC0031E00C /* DailyMatchViewController.swift in Sources */,
 				BED7AFE91CDD533D00666E29 /* KeyboardConfig.swift in Sources */,
 				BE5E327E1CB3888900D8E311 /* ConvenientView.swift in Sources */,
+				BE24A0E21CF3C1F0004DE362 /* ChatPeer.swift in Sources */,
+				BE24A0DD1CF3BF83004DE362 /* CoreDataStackManager.swift in Sources */,
 				BEB5BED01CB87659001AD651 /* ConvenientData.swift in Sources */,
 				BE5E327C1CB3888900D8E311 /* AppDelegate.swift in Sources */,
 				BEB5BECA1CB6EF8D001AD651 /* NewsTableViewCell.swift in Sources */,
@@ -701,6 +729,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		BE24A0DE1CF3C0BD004DE362 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				BE24A0DF1CF3C0BD004DE362 /* Model.xcdatamodel */,
+			);
+			currentVersion = BE24A0DF1CF3C0BD004DE362 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = BE5E32701CB3888900D8E311 /* Project object */;
 }

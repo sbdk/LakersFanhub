@@ -37,7 +37,6 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
     var foundPeers = [MCPeerID]()
     var connectedPeers: NSMutableArray!
     var chatHistoryDict:[String:AnyObject]!
-//    var invitationHandler: ((Bool, MCSession!)->Void)!
     
     var browserDelegate: MCManagerBrowserDelegate?
     var invitationDelegate: MCManagerInvitationDelegate?
@@ -94,6 +93,7 @@ class MCManager: NSObject, MCSessionDelegate, MCNearbyServiceBrowserDelegate, MC
             print("Connected to session")
             connectedPeers.addObject(peerID)
             sessionDelegate?.connectedWithPeer(peerID)
+            NSNotificationCenter.defaultCenter().postNotificationName("connectedWithPeer", object: peerID)
         case MCSessionState.Connecting:
             print("Connecting to session")
             sessionDelegate?.connectingWithPeer()

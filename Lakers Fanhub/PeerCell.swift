@@ -20,4 +20,8 @@ class PeerCell: UITableViewCell {
     
     @IBOutlet weak var badgeLabel: UILabel!
     
+    
+    @IBOutlet weak var historyPeer: UILabel!
+    
+    @IBOutlet weak var historyMessageCount: UILabel!
 }

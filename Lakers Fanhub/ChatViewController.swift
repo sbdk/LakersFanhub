@@ -7,17 +7,19 @@
 //
 
 import UIKit
+import CoreData
 import MultipeerConnectivity
 
-class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource {
+class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate {
 
     @IBOutlet weak var chatTableView: UITableView!
     @IBOutlet weak var messageInputTextView: UITextView!
-    
-    var messagesArray = [[String:String]]()
-    var peerID: MCPeerID!
+
+    var chatPeer: ChatPeer!
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    //Config keyboard
+    let defaults = NSUserDefaults.standardUserDefaults()
+    
+    //Preapare for keyboard config
     var keyboardAdjusted = false
     var lastKeyboardOffset : CGFloat = 0.0
     
@@ -48,7 +50,6 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
             self.messageInputTextView.returnKeyType = UIReturnKeyType.Send
             self.messageInputTextView.enablesReturnKeyAutomatically = true
             
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleMCReceivedDataWithNotification(_:)), name: "receivedMCDataNotification", object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
             
             //Add a tapRecognizer to this ChatView, user will tap screen to dismiss keyboard
@@ -61,43 +62,33 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.hidden = true
-        navigationItem.title = peerID.displayName
+        navigationItem.title = chatPeer.peerID.displayName
         
-        //If there is a messageArray object stored for this peerID, use this stored object to populate tableView
-        if (appDelegate.mcManager.chatHistoryDict?[peerID.displayName]) != nil{
-            messagesArray = (appDelegate.mcManager.chatHistoryDict?[peerID.displayName])! as! [[String:String]]
-        } else {
-            messagesArray = []
-        }
-        
-        //Scroll ChatTableView to last row
-        if messagesArray.count > 0 {
-            let delay = 0.1 * Double(NSEC_PER_SEC)
-            let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-            dispatch_after(time, dispatch_get_main_queue()){
-                self.chatTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: self.messagesArray.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
-            }
-        }
+        fetchedResultController.delegate = self
+        do{
+            try fetchedResultController.performFetch()
+        } catch{print(error)}
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        //Upon leave ChatView, reset unread message count for this Peer, since incoming message are still counting during the Chat
-        appDelegate.unreadMessageCount.removeValueForKey(peerID.displayName)
+        //Upon leave ChatView, reset unread message count for this Peer, since incoming message number are still counting during the Chat
+        defaults.setValue(nil, forKey: chatPeer.peerID.displayName)
         tabBarController?.tabBar.hidden = false
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messagesArray.count
+        let sectionInfo = self.fetchedResultController.sections![section]
+        return sectionInfo.numberOfObjects
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let currentMessage = messagesArray[indexPath.row] as [String:String]
-        let messageBody = currentMessage["message"]
+        let currentMessage = fetchedResultController.objectAtIndexPath(indexPath) as! ChatMessage
+        let messageBody = currentMessage.messageBody
         let messageViewMaxWidth: CGFloat = 240.0
         
-        //Situation that it's a normal message
-        if let sender = currentMessage["sender"] {
+        //Situation that it's a normal chat message(which mean message has a sender info)
+        if let sender = currentMessage.messageSender {
             if sender == "self"{
                 //implemente outgoing message
                 let cell = tableView.dequeueReusableCellWithIdentifier("sentMessageCell")! as! ChatSentMessageCell
@@ -132,7 +123,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
                 return cell
             }
         }
-        //Situation that it's the last message
+        //Situation that it's the last message (other party terminated the Chat, sender info is nil)
         else {
             //implemente end-of-chat message
             let cell = tableView.dequeueReusableCellWithIdentifier("receivedMessageCell")! as! ChatReceivedMessageCell
@@ -145,19 +136,20 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
         }
     }
     
-    
     //Implemente textView delegate method
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         //If user hit return key
         if text == "\n"{
-            //first send out this message dictionary to connected peer
+            //First send out this message dictionary to connected peer
             let messageDictionary: [String: String] = ["message": (messageInputTextView?.text)!]
-            if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: peerID){
-                
-                //then add this message dictionary to local ChatTableView, with extra user info added into dictionary
-                let dictionary: [String: String] = ["sender": "self", "message": (messageInputTextView?.text)!]
-                messagesArray.append(dictionary)
-                self.updateTableView()
+            if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: chatPeer.peerID){
+                //After message send out, store the sent message into CoreData
+                dispatch_async(dispatch_get_main_queue()){
+                    let sentMessage = ChatMessage(sender: "self", body: messageDictionary["message"]!, context: self.sharedContext)
+                    sentMessage.messagePeer = self.chatPeer
+                    self.sharedContext.insertObject(sentMessage)
+                    CoreDataStackManager.sharedInstance().saveContext()
+                }
             }
             else{
                 print("Could not send data")
@@ -167,71 +159,19 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
         return true
     }
     
-    //Another textViewDelegate method, remove the typed-in "return" value from textView
+    //Another textViewDelegate method, remove the typed-in "return" value from textView, return the inputTextView to it's default status
     func textViewDidChange(textView: UITextView) {
         if messageInputTextView.text == "\n"{
             messageInputTextView.text = ""
         }
     }
-    
-    
-    //Custom convenient function
-    func updateTableView(){
-        //whenever chatView has new message to be displayed, save the current messageArray into memory, using current peerID's displayName as dictionary key.
-        appDelegate.mcManager.chatHistoryDict?[peerID.displayName] = messagesArray
-        chatTableView.reloadData()
-        chatTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messagesArray.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
-    }
-    
-    
+
     //Implemente the endChat function for the endChatButton
     func endChat(sender: AnyObject){
         print("end chat")
         let messageDictionary: [String: String] = ["message": "chat is ended by the other party"]
-        if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: peerID){
-            //When user end a chat, also clear it's stored chat history
-            appDelegate.mcManager.chatHistoryDict.removeValueForKey(peerID.displayName)
-            appDelegate.mcManager.session.cancelConnectPeer(peerID)
-        }
-    }
-    
-    //Reaction fucntion used for received Message Notification
-    func handleMCReceivedDataWithNotification(notification: NSNotification){
-        
-        let receivedDataDictionary = notification.object as! [String:AnyObject]
-        
-        // Extract the data and the sender's MCPeerID from the received dictionary.
-        let data = receivedDataDictionary["data"] as? NSData
-        let fromPeer = receivedDataDictionary["fromPeer"] as! MCPeerID
-        
-        // Convert the data (NSData) into a Dictionary object.
-        let dataDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(data!) as! [String:String]
-        
-        // Check if there's an entry with the "message" key.
-        if let message = dataDictionary["message"] {
-            
-            // Make sure that the message is other than "_end_chat_".
-            if message != "chat is ended by the other party"{
-                
-                // Create a new dictionary and set the sender and the received message to it.
-                let messageDictionary: [String: String] = ["sender": fromPeer.displayName, "message": message]
-                
-                // Add this dictionary to the messagesArray array.
-                messagesArray.append(messageDictionary)
-                
-                // Reload the tableview data and scroll to the bottom using the main thread.
-                dispatch_async(dispatch_get_main_queue()){
-                    self.updateTableView()
-                }
-            }
-            else{
-                //in this case, only post the last message
-                let messageDictionary: [String:String] = ["message": message]
-                messagesArray.append(messageDictionary)
-                dispatch_async(dispatch_get_main_queue()){
-                    self.updateTableView()
-                }
-            }
+        if appDelegate.mcManager.sendData(dictionaryWithData: messageDictionary, toPeer: chatPeer.peerID){
+            appDelegate.mcManager.session.cancelConnectPeer(chatPeer.peerID)
         }
     }
   
@@ -239,7 +179,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
     func handleLostConnection(notification: NSNotification) {
         
         //whenever user lost connection with a peer, we need to check whether it's the current chatting peer, if so, present an alertView and leave the current ChatView
-        if (notification.object) as! MCPeerID == peerID {
+        if (notification.object) as! MCPeerID == chatPeer.peerID {
             dispatch_sync(dispatch_get_main_queue()){
                 let alterView = UIAlertController(title: "Lost connection", message: "Connection is lost, will dismiss chat window", preferredStyle: UIAlertControllerStyle.Alert)
                 let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel){(OKAction) -> Void in self.navigationController?.popViewControllerAnimated(true)
@@ -253,5 +193,56 @@ class ChatViewController: UIViewController, UITextViewDelegate, UITableViewDeleg
     //Config the TapRecognizer reponse fucntion to dismiss keyboard
     func handleSingleTap(recognizer: UITapGestureRecognizer) {
         self.view.endEditing(true)
+    }
+    
+    //Set lazy variable for CoreData
+    lazy var sharedContext = {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }()
+    
+    lazy var fetchedResultController: NSFetchedResultsController = {
+        
+        let fetchRequest = NSFetchRequest(entityName: "ChatMessage")
+        fetchRequest.predicate = NSPredicate(format: "messagePeer == %@", self.chatPeer)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "messageTime", ascending: true)]
+        let fetchedRequestController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.sharedContext, sectionNameKeyPath: nil, cacheName: nil)
+        return fetchedRequestController
+    }()
+    
+    //implemente FetchedResultController Delegate Method
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        chatTableView.beginUpdates()
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo,
+         atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+        switch type {
+        case .Insert:
+            chatTableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+        case .Delete:
+            chatTableView.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+        default:
+            return
+        }
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType,newIndexPath: NSIndexPath?) {
+        switch type {
+        case .Insert:
+            chatTableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+        case .Delete:
+            chatTableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+        case .Update:
+            break
+        case .Move:
+            break
+        }
+    }
+    
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        chatTableView.endUpdates()
+        
+        //After new message has been stored and presented, scroll the ChatTable to most recent message
+        chatTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: (fetchedResultController.fetchedObjects?.count)! - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
     }
 }

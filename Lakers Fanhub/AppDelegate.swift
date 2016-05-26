@@ -15,12 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var mcManager: MCManager!
     var connectedDevies: NSMutableArray!
-    var unreadMessageCount: [String:Int]!
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         mcManager = MCManager()
         connectedDevies = []
-        unreadMessageCount = [:]
         return true
     }
 

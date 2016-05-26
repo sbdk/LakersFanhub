@@ -7,10 +7,11 @@
 //
 
 import UIKit
+import CoreData
 import MultipeerConnectivity
 //import CoreBluetooth
 
-class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, MCManagerInvitationDelegate {
+class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, MCManagerInvitationDelegate, NSFetchedResultsControllerDelegate {
     @IBOutlet weak var deviceNameTextField: UITextField!
     @IBOutlet weak var visibleSwitch: UISwitch!
     @IBOutlet weak var connectedDeviceTableView: UITableView!
@@ -18,9 +19,17 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     @IBOutlet weak var browserButton: UIButton!
     @IBOutlet weak var helpButton: UIButton!
     @IBOutlet weak var switchView: UIView!
+    @IBOutlet weak var chatHistoryEnterView: UIView!
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     let defaults = NSUserDefaults.standardUserDefaults()
+    var storedPeerNames: Dictionary = [String:String]()
+    /*
+     We will store three objects into userDefault:
+      1, visibleSwitch status(on or off), with key: "switchStatus"
+      2, custom Chat ID set by user, with key: "customChatID"
+      3, unread messages count for specific peer, with dynamic key: specificPeer.displayName
+    */
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -31,6 +40,17 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         if self.appDelegate.mcManager.connectedPeers.count > 0 {
             self.deviceNameTextField.enabled = false
         }
+        
+//        fetchedResultController.delegate = self
+//        do{
+//            try fetchedResultController.performFetch()
+//            let fetchedResult = self.fetchedResultController.fetchedObjects as! [ChatPeer]
+//            storedPeerNames = [:]
+//            for peer in fetchedResult{
+//                storedPeerNames[peer.peerName] = peer.peerName
+//            }
+//        } catch{print(error)}
+        
     }
     
     override func viewDidLoad() {
@@ -76,10 +96,16 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
             self.connectedDeviceTableView.delegate = self
             self.connectedDeviceTableView.dataSource = self
             
-            //Make this viewController listen to lostConnection notification
+            //Make this viewController listen to lostConnection notification and successConnection notification
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.handleLostConnection(_:)), name: "lostConnectionWithPeer", object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.handleSuccessConnection(_:)), name: "connectedWithPeer", object: nil)
             //Make this viewController listen to receive message notification
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ClosestFansViewController.handleMCReceivedDataWithNotification(_:)), name: "receivedMCDataNotification", object: nil)
+            
+            //Add a tapRecognizer to chatHistoryEnterView
+            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ClosestFansViewController.handleSingleTap))
+            tapRecognizer.numberOfTapsRequired = 1
+            self.chatHistoryEnterView.addGestureRecognizer(tapRecognizer)
         }
     }
     
@@ -105,8 +131,10 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         cell.badgeLabel.layer.cornerRadius = 8.0
         cell.badgeLabel.backgroundColor = UIColor.redColor()
         cell.badgeLabel.textColor = UIColor.whiteColor()
-        if appDelegate.unreadMessageCount[peerID.displayName] != nil {
-            cell.badgeLabel.text = String(appDelegate.unreadMessageCount[peerID.displayName]!)
+        
+        //Check whether this peer has unread messages count stored in userDefault
+        if defaults.valueForKey(peerID.displayName) != nil {
+            cell.badgeLabel.text = String(defaults.valueForKey(peerID.displayName)!)
             cell.badgeLabel.hidden = false
         }
         return cell
@@ -124,12 +152,19 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         let peerID = (appDelegate.mcManager.connectedPeers)[indexPath.row] as! MCPeerID
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
+        let fetchController = peerFetchController(peerID.displayName)
+        do{
+            try fetchController.performFetch()
+        } catch{print(error)}
+        
         //Reset unread message count for this peerID
-        appDelegate.unreadMessageCount.removeValueForKey(peerID.displayName)
+        defaults.setValue(nil, forKey: peerID.displayName)
         
         //Present the ChatView
         let controller = storyboard?.instantiateViewControllerWithIdentifier("ChatViewController") as! ChatViewController
-        controller.peerID = peerID
+        let selectedPeer = (fetchController.fetchedObjects as! [ChatPeer]).first!
+//        controller.peerID = peerID
+        controller.chatPeer = selectedPeer
         navigationController?.pushViewController(controller, animated: true)
     }
     
@@ -169,29 +204,23 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
     //Config helpButton action
     @IBAction func callForHelp(sender: AnyObject) {
         
-        
         let helpView = self.storyboard?.instantiateViewControllerWithIdentifier("HelpViewController") as! HelpViewController
-//        let helpView = HelpViewController()
         helpView.modalPresentationStyle = .Popover
         helpView.popoverPresentationController?.delegate = self
-        
 
         self.presentViewController(helpView, animated: true, completion: nil)
         if let popView = helpView.popoverPresentationController{
-            
             let sourceView = sender as! UIView
             popView.sourceView = sourceView
             popView.sourceRect = sourceView.bounds
             popView.permittedArrowDirections = .Down
             helpView.preferredContentSize = CGSizeMake(self.view.bounds.width - 50, self.view.bounds.height - 100)
         }
-       
     }
     
     func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
         return UIModalPresentationStyle.None
     }
-    
     
     //Config visibleSwitch
     @IBAction func toggleVisiblity(sender: AnyObject) {
@@ -200,7 +229,6 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         } else {
             appDelegate.mcManager.advertiser.stopAdvertisingPeer()
         }
-        
         //Whenever user changed the status of visibleSwitch, save new stauts into UserDefaults to preserve this change
         defaults.setObject(visibleSwitch.on, forKey: "switchStatus")
     }
@@ -252,6 +280,32 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         }
     }
     
+    //Once a peer has connected, add Peer info into CoreData
+    func handleSuccessConnection(notification: NSNotification){
+        let peerID = notification.object as! MCPeerID
+        
+        //Perform a fetch to get stored ChatPeers
+        let fetchController = peerFetchController(peerID.displayName)
+        do{
+            try fetchController.performFetch()
+        } catch{print(error)}
+        
+        dispatch_async(dispatch_get_main_queue()){
+            
+            //If the connected peer has previously stored in CoreData, update it's peerID info
+            if let connectedPeer = (fetchController.fetchedObjects as! [ChatPeer]).first {
+                connectedPeer.peerID = peerID
+                CoreDataStackManager.sharedInstance().saveContext()
+            }
+            //If the connected peer is a new peer, add this ChatPeer object into CoreData
+            else {
+                let newPeer = ChatPeer(newPeerID: peerID, messagesArray: nil, context: self.sharedContext)
+                self.sharedContext.insertObject(newPeer)
+                CoreDataStackManager.sharedInstance().saveContext()
+            }
+        }
+    }
+    
     //Reaction fucntion used for received Message Notification
     func handleMCReceivedDataWithNotification(notification: NSNotification){
         
@@ -261,13 +315,20 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
         let data = receivedDataDictionary["data"] as? NSData
         let fromPeer = receivedDataDictionary["fromPeer"] as! MCPeerID
         
-        //Update unread message count for specific peer
+        let fetchController = peerFetchController(fromPeer.displayName)
+        do{
+            try fetchController.performFetch()
+        } catch{print(error)}
+        
+        let sourcePeer = (fetchController.fetchedObjects as! [ChatPeer]).first!
+        //Update unread message count for specific peer and save this info into userDefault
         dispatch_async(dispatch_get_main_queue()){
-            if var count = self.appDelegate.unreadMessageCount[fromPeer.displayName] {
+            if self.defaults.valueForKey(fromPeer.displayName) != nil {
+                var count = self.defaults.valueForKey(fromPeer.displayName) as! Int
                 count += 1
-                self.appDelegate.unreadMessageCount[fromPeer.displayName] = count
+                self.defaults.setValue(count, forKey: fromPeer.displayName)
             } else {
-                self.appDelegate.unreadMessageCount.updateValue(1, forKey: fromPeer.displayName)
+                self.defaults.setValue(1, forKey: fromPeer.displayName)
             }
             self.connectedDeviceTableView.reloadData()
         }
@@ -281,33 +342,70 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
             // Make sure that the message is other than "_end_chat_".
             if message != "chat is ended by the other party"{
                 
-                // Create a new dictionary and set the sender and the received message to it.
-                let messageDictionary: [String: String] = ["sender": fromPeer.displayName, "message": message]
-                
-                // Add this dictionary to the messagesArray array.
-                storeIncomingMessages(fromPeer, messageDictionary: messageDictionary)
+                dispatch_async(dispatch_get_main_queue()){
+                    let receivedMessage = ChatMessage(sender: fromPeer.displayName, body: message, context: self.sharedContext)
+                    receivedMessage.messagePeer = sourcePeer
+                    self.sharedContext.insertObject(receivedMessage)
+                    CoreDataStackManager.sharedInstance().saveContext()
+                }
             }
             else{
                 //in this case, only post the last message
-                let messageDictionary: [String:String] = ["message": message]
-                storeIncomingMessages(fromPeer, messageDictionary: messageDictionary)
+                dispatch_async(dispatch_get_main_queue()){
+                    let receivedMessage = ChatMessage(sender: nil, body: message, context: self.sharedContext)
+                    receivedMessage.messagePeer = sourcePeer
+                    self.sharedContext.insertObject(receivedMessage)
+                    CoreDataStackManager.sharedInstance().saveContext()
+                }
             }
         }
     }
     
     //Help function used to store incoming message into dictionary
-    func storeIncomingMessages(fromPeer: MCPeerID, messageDictionary: [String:String]){
-        var tempMessagesArray = [[String:String]]()
-        if appDelegate.mcManager.chatHistoryDict[fromPeer.displayName] != nil{
-            //If user already have chat history with this peer, fetch the stored chat messages array to store newly recieved message
-            tempMessagesArray = (appDelegate.mcManager.chatHistoryDict?[fromPeer.displayName])! as! [[String:String]]
-            tempMessagesArray.append(messageDictionary)
-        } else {
-            //If it's the first message that user received from this connected peer, creat a empty messages array to store this message
-            tempMessagesArray.append(messageDictionary)
-        }
-        //After storing the incoming message, update the ChatHistory dictionary
-        appDelegate.mcManager.chatHistoryDict[fromPeer.displayName] = tempMessagesArray
+//    func storeIncomingMessages(fromPeer: MCPeerID, messageDictionary: [String:String]){
+//        var tempMessagesArray = [[String:String]]()
+////        var tempMessagesArray: NSMutableArray = []
+//        if appDelegate.mcManager.chatHistoryDict[fromPeer.displayName] != nil{
+//            //If user already have chat history with this peer, fetch the stored chat messages array to store newly recieved message
+//            tempMessagesArray = (appDelegate.mcManager.chatHistoryDict?[fromPeer.displayName])! as! [[String:String]]
+//            tempMessagesArray.append(messageDictionary)
+//        } else {
+//            //If it's the first message that user received from this connected peer, creat a empty messages array to store this message
+//            tempMessagesArray.append(messageDictionary)
+//        }
+//        //After storing the incoming message, update the ChatHistory dictionary
+//        appDelegate.mcManager.chatHistoryDict[fromPeer.displayName] = tempMessagesArray
+//        
+//        
+//        //First check whether this peer has record in CoreData
+//        //If this peer has previous stored chat history, first remove it from CoreData
+////        if storedPeerNames[fromPeer.displayName] != nil{
+////            
+////        }
+////        let fetchedResult = self.fetchedResultController.fetchedObjects as! [ChatPeer]
+////        for peer in fetchedResult{
+////            if peer.peerName == fromPeer.displayName{
+////            }
+////        }
+//        
+////        if fetchedResultController.fetchedObjects?.first != nil {
+////            let fetchedResult = self.fetchedResultController.fetchedObjects as! [ChatPeer]
+////            
+////        }
+//        
+//        //Then stored the updated chat history into CoreData
+////        let updatedChatPeer = ChatPeer(chatingPeer: peerID.displayName, messagesArray: messagesArray, context: sharedContext)
+////        sharedContext.insertObject(updatedChatPeer)
+////        CoreDataStackManager.sharedInstance().saveContext()
+//    }
+    
+    //Set a max length for custom ChatID
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        let maxLength = 12
+        let currentString: NSString = textField.text!
+        let newString: NSString =
+            currentString.stringByReplacingCharactersInRange(range, withString: string)
+        return newString.length <= maxLength
     }
 
     //Implemente textField delegate method
@@ -343,5 +441,61 @@ class ClosestFansViewController: UIViewController, UITextFieldDelegate, UITableV
             appDelegate.mcManager.advertiser.startAdvertisingPeer()
         }
         return true
+    }
+    
+    //Config the TapRecognizer reponse fucntion
+    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+        ConvenientView.sharedInstance().showAlertView("this works", message: "haha", hostView: self)
+    }
+    
+    
+    //Set lazy variable for CoreData
+    lazy var sharedContext = {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }()
+    
+    
+    func peerFetchController(predicatePeerName: String) -> NSFetchedResultsController {
+        let fetchRequest = NSFetchRequest(entityName: "ChatPeer")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastChatTime", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "peerName == %@", predicatePeerName)
+        let fetchedRequestController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.sharedContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedRequestController.delegate = self
+        return fetchedRequestController
+    }
+    
+    //implemente FetchedResultController Delegate Method
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo,
+                    atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+        switch type {
+        case .Insert:
+            break
+        case .Delete:
+            break
+        default:
+            return
+        }
+    }
+    //
+    // This is the most interesting method. Take particular note of way the that newIndexPath
+    // parameter gets unwrapped and put into an array literal: [newIndexPath!]
+    //
+    
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType,newIndexPath: NSIndexPath?) {
+        switch type {
+        case .Insert:
+            break
+        case .Delete:
+            break
+        case .Update:
+            break
+        case .Move:
+            break
+        }
+    }
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
     }
 }

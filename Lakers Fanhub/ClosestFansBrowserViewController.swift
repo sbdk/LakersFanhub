@@ -133,4 +133,5 @@ class ClosestFansBrowserViewController: UIViewController, UITableViewDataSource,
     @IBAction func cancelButtonTouched(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
+    
 }
